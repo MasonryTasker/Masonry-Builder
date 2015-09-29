@@ -1,0 +1,42 @@
+{
+    "name": "foundry/masonry-website-builder",
+    "description": "Easily extensible, basic tools for building/deploying websites.",
+    "license": "MIT",
+    "minimum-stability" : "stable",
+    "authors": [
+        {
+            "name": "Daniel Mason",
+            "email": "daniel.mason@thefoundry.co.uk"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Foundry\\Masonry\\Builder" : "src/"
+        }
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "Foundry\\Masonry\\Builder\\Tests\\" : "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "psr/log" : "^1.0",
+        "foundry/masonry": "^0.0.0",
+        "symfony/yaml": "^2.7"
+    },
+    "require-dev" : {
+        "squizlabs/php_codesniffer" : "^2.3",
+        "phpmd/phpmd" : "^2.2",
+        "phpunit/phpunit" : "^4.6",
+        "phploc/phploc" : "^2.1",
+        "pdepend/pdepend" : "2.1",
+        "sebastian/phpcpd" : "^2.0"
+    },
+    "config" : {
+        "bin-dir" : "bin",
+        "github-protocols" : [
+            "https"
+        ]
+    }
+}
