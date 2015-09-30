@@ -11,7 +11,7 @@
     ],
     "autoload" : {
         "psr-4" : {
-            "Foundry\\Masonry\\Builder" : "src/"
+            "Foundry\\Masonry\\Builder\\" : "src/"
         }
     },
     "autoload-dev" : {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "96dfd70dbe3e47e24f978c1f1860b358",
+    "hash": "b72bbfd98122f1808ee2402e48ed5633",
     "packages": [
         {
             "name": "foundry/masonry",
