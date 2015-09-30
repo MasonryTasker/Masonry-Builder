@@ -16,7 +16,7 @@
     },
     "autoload-dev" : {
         "psr-4" : {
-            "Foundry\\Masonry\\Builder\\Tests\\" : "tests/"
+            "Foundry\\Masonry\\Tests\\Builder\\" : "tests/"
         }
     },
     "require": {

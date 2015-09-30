@@ -11,7 +11,7 @@
  */
 
 
-namespace Foundry\Masonry\Builder;
+namespace Foundry\Masonry\Builder\Logging;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;

@@ -11,15 +11,16 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Tests;
+namespace Foundry\Masonry\Tests\Builder\Logging;
 
 
-use Foundry\Masonry\Builder\MultiLogger;
+use Foundry\Masonry\Builder\Logging\MultiLogger;
+use Foundry\Masonry\Tests\Builder\TestCase;
 use Psr\Log\LogLevel;
 
 /**
  * Class MultiLoggerTest
- * @coversDefaultClass Foundry\Masonry\Builder\MultiLogger
+ * @coversDefaultClass Foundry\Masonry\Builder\Logging\MultiLogger
  * @package Foundry\Masonry\Builder\Tests
  */
 class MultiLoggerTest extends TestCase
@@ -70,7 +71,7 @@ class MultiLoggerTest extends TestCase
     /**
      * @test
      * @covers ::log
-     * @uses Foundry\Masonry\Builder\MultiLogger::addLogger
+     * @uses Foundry\Masonry\Builder\Logging\MultiLogger::addLogger
      * @return void
      */
     public function testLog()

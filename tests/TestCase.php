@@ -11,7 +11,7 @@
  * @copyright 2015 The Foundry Visionmongers
  */
 
-namespace Foundry\Masonry\Builder\Tests;
+namespace Foundry\Masonry\Tests\Builder;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
