@@ -35,7 +35,7 @@ class MultiLogger extends AbstractLogger
      */
     public function addLogger(LoggerInterface $logger)
     {
-        $this->loggers = $logger;
+        $this->loggers[] = $logger;
         return $this;
     }
 
