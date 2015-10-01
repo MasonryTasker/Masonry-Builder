@@ -16,11 +16,11 @@
     },
     "autoload-dev" : {
         "psr-4" : {
-            "Foundry\\Masonry\\Tests\\Builder\\" : "tests/"
+            "Foundry\\Masonry\\Builder\\Tests\\" : "tests/"
         }
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.5.0",
         "psr/log" : "^1.0",
         "foundry/masonry": "^0.0.0",
         "symfony/yaml": "^2.7"

@@ -11,11 +11,11 @@
  */
 
 
-namespace Foundry\Masonry\Tests\Builder\Logging;
+namespace Foundry\Masonry\Builder\Tests\PhpUnit\Logging;
 
 
 use Foundry\Masonry\Builder\Logging\MultiLogger;
-use Foundry\Masonry\Tests\Builder\TestCase;
+use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use Psr\Log\LogLevel;
 
 /**
