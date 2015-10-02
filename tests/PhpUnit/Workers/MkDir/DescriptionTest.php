@@ -26,6 +26,7 @@ use Foundry\Masonry\Builder\Workers\MkDir\Description;
 class DescriptionTest extends TestCase
 {
     /**
+     * @test
      * @covers ::__construct
      * @return void
      */
@@ -36,6 +37,34 @@ class DescriptionTest extends TestCase
         $this->assertSame(
             $name,
             $this->getObjectAttribute($description, 'name')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::__construct
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $name is required
+     * @return void
+     */
+    public function testConstructException()
+    {
+        new Description('');
+    }
+
+    /**
+     * @test
+     * @covers ::getName
+     * @uses Foundry\Masonry\Builder\Workers\MkDir\Description::__construct
+     * @return void
+     */
+    public function testGetName()
+    {
+        $name = 'test';
+        $description = new Description($name);
+        $this->assertSame(
+            $name,
+            $description->getName()
         );
     }
 }
