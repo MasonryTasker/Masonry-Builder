@@ -11,17 +11,17 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\MkDir;
+namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\MakeDirectory;
 
 
 
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
-use Foundry\Masonry\Builder\Workers\MkDir\Description;
+use Foundry\Masonry\Builder\Workers\MakeDirectory\Description;
 
 /**
  * Class DescriptionTest
- * @coversDefaultClass Foundry\Masonry\Builder\Workers\MkDir\Description
- * @package Foundry\Masonry\Builder\Tests\PhpUnit\Workers\MkDir
+ * @coversDefaultClass Foundry\Masonry\Builder\Workers\MakeDirectory\Description
+ * @package Foundry\Masonry\Builder\Tests\PhpUnit\Workers\MakeDirectory
  */
 class DescriptionTest extends TestCase
 {
@@ -55,7 +55,7 @@ class DescriptionTest extends TestCase
     /**
      * @test
      * @covers ::getName
-     * @uses Foundry\Masonry\Builder\Workers\MkDir\Description::__construct
+     * @uses Foundry\Masonry\Builder\Workers\MakeDirectory\Description::__construct
      * @return void
      */
     public function testGetName()

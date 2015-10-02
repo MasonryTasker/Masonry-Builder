@@ -11,14 +11,14 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Workers\MkDir;
+namespace Foundry\Masonry\Builder\Workers\MakeDirectory;
 
 use Foundry\Masonry\Builder\Workers\GenericDescription;
 
 /**
  * Class Description
  *
- * @package Foundry\Masonry\Builder\Workers\MkDir
+ * @package Foundry\Masonry-Website-Builder
  */
 class Description extends GenericDescription
 {

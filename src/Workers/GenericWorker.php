@@ -19,6 +19,11 @@ use Foundry\Masonry\Interfaces\WorkerInterface;
 use React\Promise\Deferred;
 use React\Promise\Promise;
 
+/**
+ * Class GenericWorker
+ *
+ * @package Foundry\Masonry-Website-Builder
+ */
 abstract class GenericWorker implements WorkerInterface
 {
 

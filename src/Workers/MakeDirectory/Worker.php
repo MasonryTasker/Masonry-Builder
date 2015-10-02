@@ -11,7 +11,7 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Workers\MkDir;
+namespace Foundry\Masonry\Builder\Workers\MakeDirectory;
 
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
@@ -20,6 +20,12 @@ use React\Promise\Deferred;
 class Worker extends GenericWorker
 {
 
+    /**
+     * Make a directory as described in the task description
+     * @param Deferred $deferred
+     * @param TaskInterface $task
+     * @return bool
+     */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
         /** @var Description $description */
