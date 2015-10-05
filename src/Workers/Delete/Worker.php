@@ -33,7 +33,7 @@ class Worker extends GenericWorker
 
         $deferred->notify("Deleting file or directory '{$description->getName()}'");
 
-        if(unlink($description->getName())) {
+        if (unlink($description->getName())) {
             $deferred->resolve("Deleted file or directory '{$description->getName()}'");
             return true;
         }
@@ -54,5 +54,4 @@ class Worker extends GenericWorker
             Description::class
         ];
     }
-
 }

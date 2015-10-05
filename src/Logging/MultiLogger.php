@@ -49,7 +49,7 @@ class MultiLogger extends AbstractLogger
      */
     public function log($level, $message, array $context = array())
     {
-        foreach($this->loggers as $logger) {
+        foreach ($this->loggers as $logger) {
             $logger->log($level, $message, $context);
         }
     }

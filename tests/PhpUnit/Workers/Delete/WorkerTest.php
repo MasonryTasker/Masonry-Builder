@@ -111,9 +111,18 @@ class WorkerTest extends GenericWorkerTestCase
         $failureMessage = '';
         $notifyMessage = '';
 
-        $successClosure = function ($message) use (&$successMessage) { $successMessage = $message; };
-        $failureClosure = function ($message) use (&$failureMessage) { $failureMessage = $message; };
-        $notifyClosure  = function ($message) use (&$notifyMessage)  { $notifyMessage  = $message; };
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+
+        };
+        $notifyClosure  = function ($message) use (&$notifyMessage) {
+            $notifyMessage  = $message;
+
+        };
 
         $deferred = new Deferred();
         $deferred->promise()->then(
@@ -177,9 +186,18 @@ class WorkerTest extends GenericWorkerTestCase
         $failureMessage = '';
         $notifyMessage = '';
 
-        $successClosure = function ($message) use (&$successMessage) { $successMessage = $message; };
-        $failureClosure = function ($message) use (&$failureMessage) { $failureMessage = $message; };
-        $notifyClosure  = function ($message) use (&$notifyMessage)  { $notifyMessage  = $message; };
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+
+        };
+        $notifyClosure  = function ($message) use (&$notifyMessage) {
+            $notifyMessage  = $message;
+
+        };
 
         $deferred = new Deferred();
         $deferred->promise()->then(
@@ -229,5 +247,4 @@ class WorkerTest extends GenericWorkerTestCase
             $notifyMessage
         );
     }
-
 }

@@ -13,7 +13,6 @@
 
 namespace Foundry\Masonry\Builder\Workers;
 
-
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
 
 abstract class GenericDescription implements DescriptionInterface

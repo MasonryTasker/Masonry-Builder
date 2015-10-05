@@ -13,7 +13,6 @@
 
 namespace Foundry\Masonry\Builder\Workers;
 
-
 use Foundry\Masonry\Interfaces\TaskInterface;
 use Foundry\Masonry\Interfaces\WorkerInterface;
 use React\Promise\Deferred;
@@ -33,7 +32,7 @@ abstract class GenericWorker implements WorkerInterface
      * @param TaskInterface $task
      * @return mixed
      */
-    protected abstract function processDeferred(Deferred $deferred, TaskInterface $task);
+    abstract protected function processDeferred(Deferred $deferred, TaskInterface $task);
 
     /**
      * Set the task the worker needs to complete.
@@ -45,7 +44,7 @@ abstract class GenericWorker implements WorkerInterface
     {
         $deferred = new Deferred();
 
-        if(!$this->isTaskDescriptionValid($task)) {
+        if (!$this->isTaskDescriptionValid($task)) {
             $deferred->reject('Invalid Task Description');
             return $deferred->promise();
         }
@@ -62,8 +61,8 @@ abstract class GenericWorker implements WorkerInterface
      */
     protected function isTaskDescriptionValid(TaskInterface $task)
     {
-        foreach($this->getDescriptionTypes() as $type) {
-            if(!$task->getDescription() instanceof $type) {
+        foreach ($this->getDescriptionTypes() as $type) {
+            if (!$task->getDescription() instanceof $type) {
                 return false;
             }
         }

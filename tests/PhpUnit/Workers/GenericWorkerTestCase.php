@@ -13,7 +13,6 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers;
 
-
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Core\Task;
@@ -63,8 +62,14 @@ abstract class GenericWorkerTestCase extends TestCase
         $isSuccess = false;
         $isFailure = false;
 
-        $successCallback = function() use (&$isSuccess) { $isSuccess = true; };
-        $failureCallback = function() use (&$isFailure) { $isFailure = true; };
+        $successCallback = function () use (&$isSuccess) {
+            $isSuccess = true;
+
+        };
+        $failureCallback = function () use (&$isFailure) {
+            $isFailure = true;
+
+        };
 
         $promise->then(
             $successCallback,
@@ -88,8 +93,14 @@ abstract class GenericWorkerTestCase extends TestCase
         $isSuccess = false;
         $isFailure = false;
 
-        $successCallback = function() use (&$isSuccess) { $isSuccess = true; };
-        $failureCallback = function() use (&$isFailure) { $isFailure = true; };
+        $successCallback = function () use (&$isSuccess) {
+            $isSuccess = true;
+
+        };
+        $failureCallback = function () use (&$isFailure) {
+            $isFailure = true;
+
+        };
 
         $promise->then(
             $successCallback,
@@ -103,7 +114,4 @@ abstract class GenericWorkerTestCase extends TestCase
             $isFailure
         );
     }
-
-
-
 }

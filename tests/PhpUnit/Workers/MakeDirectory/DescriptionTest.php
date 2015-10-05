@@ -13,8 +13,6 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\MakeDirectory;
 
-
-
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use Foundry\Masonry\Builder\Workers\MakeDirectory\Description;
 

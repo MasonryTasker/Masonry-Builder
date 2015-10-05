@@ -24,16 +24,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getObjectMethod($object, $methodName)
     {
-        if(!is_object($object)) {
+        if (!is_object($object)) {
             throw new \InvalidArgumentException('Can not get method of non object');
         }
 
         $reflectionMethod = new \ReflectionMethod($object, $methodName);
         $reflectionMethod->setAccessible(true);
 
-        return function() use ($object, $reflectionMethod) {
+        return function () use ($object, $reflectionMethod) {
             return $reflectionMethod->invokeArgs($object, func_get_args());
         };
     }
-
 }

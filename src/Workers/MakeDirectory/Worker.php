@@ -33,7 +33,7 @@ class Worker extends GenericWorker
 
         $deferred->notify("Creating directory '{$description->getName()}'");
 
-        if(mkdir($description->getName(), 0777, true)) {
+        if (mkdir($description->getName(), 0777, true)) {
             $deferred->resolve("Created directory '{$description->getName()}'");
             return true;
         }
@@ -54,5 +54,4 @@ class Worker extends GenericWorker
             Description::class
         ];
     }
-
 }

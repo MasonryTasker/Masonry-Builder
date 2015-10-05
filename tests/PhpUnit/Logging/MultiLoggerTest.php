@@ -13,7 +13,6 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Logging;
 
-
 use Foundry\Masonry\Builder\Logging\MultiLogger;
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use Psr\Log\LogLevel;
@@ -101,5 +100,4 @@ class MultiLoggerTest extends TestCase
             $multiLogger->log($level, $message, $context)
         );
     }
-
 }

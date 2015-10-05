@@ -13,8 +13,6 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\Delete;
 
-
-
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use Foundry\Masonry\Builder\Workers\Delete\Description;
 

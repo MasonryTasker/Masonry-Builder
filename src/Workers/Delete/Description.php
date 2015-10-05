@@ -31,8 +31,9 @@ class Description extends GenericDescription
     /**
      * @param string $name The name of the directory to create
      */
-    public function __construct($name) {
-        if(!$name) {
+    public function __construct($name)
+    {
+        if (!$name) {
             throw new \InvalidArgumentException('$name is required');
         }
         $this->name = $name;
@@ -45,5 +46,4 @@ class Description extends GenericDescription
     {
         return $this->name;
     }
-
 }
