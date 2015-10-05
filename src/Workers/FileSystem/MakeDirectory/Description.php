@@ -29,7 +29,7 @@ class Description extends GenericDescription
     protected $name;
 
     /**
-     * @param string $name The name of the directory to create
+     * @param string $name The name of the file or directory to delete
      */
     public function __construct($name)
     {
