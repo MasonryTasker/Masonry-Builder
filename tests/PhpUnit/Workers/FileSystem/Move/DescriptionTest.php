@@ -11,14 +11,14 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Copy;
+namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Move;
 
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
-use Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description;
+use Foundry\Masonry\Builder\Workers\FileSystem\Move\Description;
 
 /**
  * Class DescriptionTest
- * @coversDefaultClass Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
+ * @coversDefaultClass Foundry\Masonry\Builder\Workers\FileSystem\Move\Description
  * @package Foundry\Masonry-Website-Builder
  */
 class DescriptionTest extends TestCase
@@ -69,8 +69,8 @@ class DescriptionTest extends TestCase
 
     /**
      * @test
-     * @covers ::getName
-     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description::__construct
+     * @covers ::getFrom
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Move\Description::__construct
      * @return void
      */
     public function testGetFrom()
@@ -86,8 +86,8 @@ class DescriptionTest extends TestCase
 
     /**
      * @test
-     * @covers ::getName
-     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description::__construct
+     * @covers ::getTo
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Move\Description::__construct
      * @return void
      */
     public function testGetTo()
