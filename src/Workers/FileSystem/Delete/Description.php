@@ -11,7 +11,7 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Workers\Delete;
+namespace Foundry\Masonry\Builder\Workers\FileSystem\Delete;
 
 use Foundry\Masonry\Builder\Workers\GenericDescription;
 

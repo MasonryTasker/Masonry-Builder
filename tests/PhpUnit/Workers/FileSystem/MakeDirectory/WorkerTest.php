@@ -11,11 +11,11 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\MakeDirectory;
+namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\MakeDirectory;
 
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
-use Foundry\Masonry\Builder\Workers\MakeDirectory\Worker;
-use Foundry\Masonry\Builder\Workers\MakeDirectory\Description;
+use Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Worker;
+use Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
 use org\bovigo\vfs\vfsStream;
@@ -23,7 +23,7 @@ use React\Promise\Deferred;
 
 /**
  * Class WorkerTest
- * @coversDefaultClass Foundry\Masonry\Builder\Workers\MakeDirectory\Worker
+ * @coversDefaultClass Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Worker
  * @package Foundry\Masonry-Website-Builder
  */
 class WorkerTest extends GenericWorkerTestCase
@@ -59,7 +59,7 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::isTaskDescriptionValid
-     * @uses Foundry\Masonry\Builder\Workers\MakeDirectory\Worker::getDescriptionTypes
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Worker::getDescriptionTypes
      * @return void
      */
     public function testIsTaskDescriptionValid()
@@ -101,7 +101,7 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::processDeferred
-     * @uses Foundry\Masonry\Builder\Workers\MakeDirectory\Description
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -175,7 +175,7 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::processDeferred
-     * @uses Foundry\Masonry\Builder\Workers\MakeDirectory\Description
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @return void
      */
     public function testProcessDeferredFailure()

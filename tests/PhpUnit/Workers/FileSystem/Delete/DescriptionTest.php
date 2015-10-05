@@ -11,15 +11,15 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\Delete;
+namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Delete;
 
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
-use Foundry\Masonry\Builder\Workers\Delete\Description;
+use Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description;
 
 /**
  * Class DescriptionTest
- * @coversDefaultClass Foundry\Masonry\Builder\Workers\Delete\Description
- * @package Foundry\Masonry\Builder\Tests\PhpUnit\Workers\Delete
+ * @coversDefaultClass Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
+ * @package Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Delete
  */
 class DescriptionTest extends TestCase
 {
@@ -53,7 +53,7 @@ class DescriptionTest extends TestCase
     /**
      * @test
      * @covers ::getName
-     * @uses Foundry\Masonry\Builder\Workers\Delete\Description::__construct
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description::__construct
      * @return void
      */
     public function testGetName()

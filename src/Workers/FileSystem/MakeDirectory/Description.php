@@ -11,7 +11,7 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Workers\MakeDirectory;
+namespace Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory;
 
 use Foundry\Masonry\Builder\Workers\GenericDescription;
 

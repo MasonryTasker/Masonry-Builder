@@ -11,11 +11,11 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\Delete;
+namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Delete;
 
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
-use Foundry\Masonry\Builder\Workers\Delete\Worker;
-use Foundry\Masonry\Builder\Workers\Delete\Description;
+use Foundry\Masonry\Builder\Workers\FileSystem\Delete\Worker;
+use Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
 use org\bovigo\vfs\vfsStream;
@@ -23,7 +23,7 @@ use React\Promise\Deferred;
 
 /**
  * Class WorkerTest
- * @coversDefaultClass Foundry\Masonry\Builder\Workers\Delete\Worker
+ * @coversDefaultClass Foundry\Masonry\Builder\Workers\FileSystem\Delete\Worker
  * @package Foundry\Masonry-Website-Builder
  */
 class WorkerTest extends GenericWorkerTestCase
@@ -59,7 +59,7 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::isTaskDescriptionValid
-     * @uses Foundry\Masonry\Builder\Workers\Delete\Worker::getDescriptionTypes
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Worker::getDescriptionTypes
      * @return void
      */
     public function testIsTaskDescriptionValid()
@@ -101,7 +101,7 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::processDeferred
-     * @uses Foundry\Masonry\Builder\Workers\Delete\Description
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -176,7 +176,7 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::processDeferred
-     * @uses Foundry\Masonry\Builder\Workers\Delete\Description
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -207,10 +207,10 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFile = 'root/test/file';
+        $testFile = 'root/test-file';
 
-        $root = vfsStream::setup('root', 0777);
-        $root->addChild(vfsStream::create([ 'test' => ['file' => 'test file']]));
+        $root = vfsStream::setup('root', 0000);
+        $root->addChild(vfsStream::create([ 'test-file' => 'test file']));
         $description = new Description(vfsStream::url($testFile));
         $task = new Task($description);
         $worker = new Worker();
@@ -222,23 +222,23 @@ class WorkerTest extends GenericWorkerTestCase
             $root->hasChild($testFile)
         );
 
-        $this->assertTrue(
+        $this->assertFalse(
             $processDeferred($deferred, $task),
-            $failureMessage
+            $successMessage
         );
 
-        $this->assertFalse(
+        $this->assertTrue(
             $root->hasChild($testFile)
         );
 
         // Test messages
         $this->assertSame(
-            "Deleted file or directory 'vfs://{$testFile}'",
+            "",
             $successMessage
         );
 
         $this->assertSame(
-            "",
+            "File or directory 'vfs://{$testFile}' could not be deleted",
             $failureMessage
         );
 
