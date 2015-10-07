@@ -13,6 +13,7 @@
 
 namespace Foundry\Masonry\Builder\Workers\PackageManager\Composer;
 
+use Foundry\Masonry\Builder\Helpers\EnvironmentTrait;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -21,6 +22,8 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 class Worker extends GenericWorker
 {
+
+    use EnvironmentTrait;
 
     /**
      * @var Composer
@@ -35,26 +38,31 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        
         /** @var Description $description */
         $description = $task->getDescription();
 
         $deferred->notify("Preparing to run composer '{$description->getCommand()}'");
 
         try {
-            if (!getenv('COMPOSER_HOME')) {
+            if (!$this->getEnvironment()->get('COMPOSER_HOME')) {
                 $this->setComposerHome();
             }
-            $input = new ArrayInput([
+            $input = new ArrayInput(
+                [
                 'command' => $description->getCommand(),
                 '-d' => $description->getLocation(),
-            ]);
+                ]
+            );
+            // Thought: It would be cool to add a stream into $deferred->notify from ->run but
+            //          since run is unlikely to work asynchronously it is probably pointless
             $this->getComposer()->run($input);
+
         } catch (\Exception $e) {
             $deferred->reject("Composer '{$description->getCommand()}' failed");
-
             return false;
-        }
 
+        }
 
         $deferred->resolve("Composer '{$description->getCommand()}' ran successfully");
 
@@ -64,7 +72,7 @@ class Worker extends GenericWorker
     /**
      * @return Composer
      */
-    public function getComposer()
+    protected function getComposer()
     {
         if (!$this->composer) {
             $this->composer = new Composer();
@@ -91,9 +99,9 @@ class Worker extends GenericWorker
      * Set composer home
      * @param null $composerHome
      * @throws \Exception
-     * @return void
+     * @return $this
      */
-    public function setComposerHome($composerHome = null)
+    protected function setComposerHome($composerHome = null)
     {
         if (!$composerHome) {
             $composerHome = sys_get_temp_dir() . '/composer_home';
@@ -101,7 +109,10 @@ class Worker extends GenericWorker
         if (!is_dir($composerHome) && !mkdir($composerHome)) {
             throw new \Exception('Could not create composer home.');
         }
-        putenv('COMPOSER_HOME=' . $composerHome);
+        if (!$this->getEnvironment()->set('COMPOSER_HOME', $composerHome)) {
+            throw new \Exception('Could not set COMPOSER_HOME environment variable.');
+        }
+        return $this;
     }
 
     /**
