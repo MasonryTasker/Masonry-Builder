@@ -11,7 +11,7 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Helpers;
+namespace Foundry\Masonry\Builder\Helper;
 
 /**
  * Class Environment

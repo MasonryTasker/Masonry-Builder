@@ -13,7 +13,7 @@
 
 namespace Foundry\Masonry\Builder\Workers\PackageManager\Composer;
 
-use Foundry\Masonry\Builder\Helpers\EnvironmentTrait;
+use Foundry\Masonry\Builder\Helper\EnvironmentTrait;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;

@@ -4,14 +4,14 @@
  * PHP version 5.4
  * 2015-10-06
  *
+ * @category  Helper
  * @package   Foundry\Masonry-Website-Builder
- * @category
  * @author    Daniel Mason <daniel.mason@thefoundry.co.uk>
  * @copyright 2015 The Foundry Visionmongers
  */
 
 
-namespace Foundry\Masonry\Builder\Helpers;
+namespace Foundry\Masonry\Builder\Helper;
 
 /**
  * Class Environment

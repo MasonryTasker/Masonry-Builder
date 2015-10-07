@@ -13,7 +13,7 @@
 
 namespace PhpUnit\Workers\PackageManager\Composer;
 
-use Foundry\Masonry\Builder\Helpers\Environment;
+use Foundry\Masonry\Builder\Helper\Environment;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker;
 use Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description;
