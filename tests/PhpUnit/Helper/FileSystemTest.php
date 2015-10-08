@@ -19,58 +19,26 @@ use org\bovigo\vfs\vfsStream;
 /**
  * Class FileSystemTest
  * @package Foundry\Masonry-Builder
- * @see     https://github.com/Visionmongers/
+ * @see     https://github.com/Visionmongers/Masonry-Builder
+ * @coversDefaultClass Foundry\Masonry\Builder\Helper\FileSystem
  */
 class FileSystemTest extends TestCase
 {
 
-    public function testCopyFile()
-    {
-        $root = 'root';
-        $from = 'testFile.txt';
-        $to   = 'testFileCopy.txt';
-
-        $fileSystem = vfsStream::setup($root, 0777);
-        $fileSystem->addChild(vfsStream::create([
-            $from => 'test file contents'
-        ]));
-
-        $fromUrl = vfsStream::url($root.'/'.$from);
-        $toUrl   = vfsStream::url($root.'/'.$to);
-
-        $fileSystemHelper = new FileSystem();
-
-        $this->assertTrue(
-            is_file($fromUrl)
-        );
-        $this->assertFalse(
-            is_file($toUrl)
-        );
-
-        $this->assertTrue(
-            $fileSystemHelper->copy(
-                $fromUrl,
-                $toUrl
-            )
-        );
-
-        $this->assertTrue(
-            is_file($fromUrl)
-        );
-        $this->assertTrue(
-            is_file($toUrl)
-        );
-
-    }
-
-    public function testCopyDirectory()
+    /**
+     * @covers ::copy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @throws \Exception
+     * @return void
+     */
+    public function testCopy()
     {
         $root = 'root';
         $from = 'testDir';
-        $to   = 'testDirCopy';
+        $to = 'testDirCopy';
 
-        $fileSystem = vfsStream::setup($root, 0777);
-        $fileSystem->addChild(vfsStream::create([
+        $mockFileSystem = vfsStream::setup($root, 0777);
+        $mockFileSystem->addChild(vfsStream::create([
             $from => [
                 'secondLevelDir' => [
                     'secondLevelFile.txt' => 'second level file contents'
@@ -79,22 +47,22 @@ class FileSystemTest extends TestCase
             ]
         ]));
 
+        $fromUrl = vfsStream::url('root/' . $from);
+        $toUrl = vfsStream::url('root/' . $to);
+
         $fileSystemHelper = new FileSystem();
 
-        $fromUrl = vfsStream::url('root/'.$from);
-        $toUrl   = vfsStream::url('root/'.$to);
-
         $this->assertTrue(
-            is_file($fromUrl.'/file.txt')
+            is_file($fromUrl . '/file.txt')
         );
         $this->assertFalse(
-            is_file($toUrl.'/file.txt')
+            is_file($toUrl . '/file.txt')
         );
         $this->assertTrue(
-            is_file($fromUrl.'/secondLevelDir/secondLevelFile.txt')
+            is_file($fromUrl . '/secondLevelDir/secondLevelFile.txt')
         );
         $this->assertFalse(
-            is_file($toUrl.'/secondLevelDir/secondLevelFile.txt')
+            is_file($toUrl . '/secondLevelDir/secondLevelFile.txt')
         );
 
         $this->assertTrue(
@@ -105,32 +73,277 @@ class FileSystemTest extends TestCase
         );
 
         $this->assertTrue(
-            is_file($fromUrl.'/file.txt')
+            is_file($fromUrl . '/file.txt')
         );
         $this->assertTrue(
-            is_file($toUrl.'/file.txt')
+            is_file($toUrl . '/file.txt')
         );
         $this->assertTrue(
-            is_file($fromUrl.'/secondLevelDir/secondLevelFile.txt')
+            is_file($fromUrl . '/secondLevelDir/secondLevelFile.txt')
         );
         $this->assertTrue(
-            is_file($toUrl.'/secondLevelDir/secondLevelFile.txt')
+            is_file($toUrl . '/secondLevelDir/secondLevelFile.txt')
         );
     }
 
-//    public function testDelete()
-//    {
-//
-//    }
-//
-//    public function testMakeDirectory()
-//    {
-//
-//    }
-//
-//    public function testMove()
-//    {
-//
-//    }
+    /**
+     * @covers ::copy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @throws \Exception
+     * @expectedException \Exception
+     * @expectedExceptionMessage Could not copy file
+     * @return void
+     */
+    public function testCopyFileException()
+    {
+        $root = 'root';
+        $from = 'testDir';
+        $to = 'testDirCopy';
+
+        $mockFileSystem = vfsStream::setup($root, 0000);
+        $mockFileSystem->addChild(vfsStream::create([
+            $from => [
+                'file.txt' => 'file contents'
+            ]
+        ]));
+
+        $fromUrl = vfsStream::url('root/' . $from);
+        $toUrl = vfsStream::url('root/' . $to);
+
+        $fileSystemHelper = new FileSystem();
+
+        $this->assertTrue(
+            is_file($fromUrl . '/file.txt')
+        );
+
+        // This should throw an exception
+        $fileSystemHelper->copy(
+            $fromUrl . '/file.txt',
+            $toUrl . '/file.txt'
+        );
+    }
+
+    /**
+     * @covers ::copy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @throws \Exception
+     * @expectedException \Exception
+     * @expectedExceptionMessage Could not create directory
+     * @return void
+     */
+    public function testCopyDirException()
+    {
+        $root = 'root';
+        $from = 'testDir';
+        $to = 'testDirCopy';
+
+        $mockFileSystem = vfsStream::setup($root, 0000);
+        $mockFileSystem->addChild(vfsStream::create([
+            $from => [
+                'file.txt' => 'file contents'
+            ]
+        ]));
+
+        $fromUrl = vfsStream::url('root/' . $from);
+        $toUrl = vfsStream::url('root/' . $to);
+
+        $fileSystemHelper = new FileSystem();
+
+        $this->assertTrue(
+            is_file($fromUrl . '/file.txt')
+        );
+
+        // This should throw an exception
+        $fileSystemHelper->copy(
+            $fromUrl,
+            $toUrl
+        );
+    }
+
+    /**
+     * @covers ::copy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @throws \Exception
+     * @expectedException \Exception
+     * @expectedExceptionMessage does not exist or is not accessible
+     * @return void
+     */
+    public function testCopyNotExistsException()
+    {
+        $root = 'root';
+        $from = 'testDir';
+        $to = 'testDirCopy';
+
+        $mockFileSystem = vfsStream::setup($root, 0000);
+
+        $fromUrl = vfsStream::url('root/' . $from);
+        $toUrl = vfsStream::url('root/' . $to);
+
+        $fileSystemHelper = new FileSystem();
+
+        // This should throw an exception
+        $fileSystemHelper->copy(
+            $fromUrl,
+            $toUrl
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::delete
+     * @return void
+     */
+    public function testDelete()
+    {
+        $root = 'root';
+        $delDir = 'testDir';
+
+        $mockFileSystem = vfsStream::setup($root, 0777);
+        $mockFileSystem->addChild(vfsStream::create([
+            $delDir => [
+                'secondLevelDir' => [
+                    'secondLevelFile.txt' => 'second level file contents'
+                ],
+                'file.txt' => 'file contents'
+            ],
+            'deletableDir' => [
+                'undeletableFile.txt' => 'Can\'t touch this'
+            ]
+        ]));
+        chmod(vfsStream::url('deletableDir/undeletableFile.txt'), 0000);
+
+
+        $delDirUrl = vfsStream::url('root/' . $delDir);
+
+        $fileSystemHelper = new FileSystem();
+
+        // Test failures
+        $this->assertFalse(
+            $fileSystemHelper->delete($delDirUrl . '/not-a-file.txt')
+        );
+        $this->assertFalse(
+            $fileSystemHelper->delete(vfsStream::url('deletableDir'))
+        );
+
+        // Test successes
+        $this->assertTrue(
+            is_dir($delDirUrl)
+        );
+        $this->assertTrue(
+            is_file($delDirUrl . '/file.txt')
+        );
+        $this->assertTrue(
+            is_dir($delDirUrl . '/secondLevelDir')
+        );
+        $this->assertTrue(
+            is_file($delDirUrl . '/secondLevelDir/secondLevelFile.txt')
+        );
+
+        $this->assertTrue(
+            $fileSystemHelper->delete($delDirUrl)
+        );
+
+        $this->assertFalse(
+            is_file($delDirUrl . '/secondLevelDir/secondLevelFile.txt')
+        );
+        $this->assertFalse(
+            is_dir($delDirUrl . '/secondLevelDir')
+        );
+        $this->assertFalse(
+            is_file($delDirUrl . '/file.txt')
+        );
+        $this->assertFalse(
+            is_dir($delDirUrl)
+        );
+
+    }
+
+    /**
+     * @test
+     * @covers ::makeDirectory
+     * @return void
+     */
+    public function testMakeDirectory()
+    {
+        $root = 'root';
+        $newDir = 'testDir';
+
+        $mockFileSystem = vfsStream::setup($root, 0777);
+        $newDirUrl = vfsStream::url('root/' . $newDir);
+
+        $fileSystemHelper = new FileSystem();
+
+        $this->assertFalse(
+            is_dir($newDirUrl)
+        );
+
+        $this->assertTrue(
+            $fileSystemHelper->makeDirectory($newDirUrl)
+        );
+
+        $this->assertTrue(
+            is_dir($newDirUrl)
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::move
+     * @return void
+     */
+    public function testMove()
+    {
+        $root = 'root';
+        $from = 'testDir';
+        $to = 'testDirMoved';
+
+        $mockFileSystem = vfsStream::setup($root, 0777);
+        $mockFileSystem->addChild(vfsStream::create([
+            $from => [
+                'secondLevelDir' => [
+                    'secondLevelFile.txt' => 'second level file contents'
+                ],
+                'file.txt' => 'file contents'
+            ]
+        ]));
+
+        $fromUrl = vfsStream::url('root/' . $from);
+        $toUrl = vfsStream::url('root/' . $to);
+
+        $fileSystemHelper = new FileSystem();
+
+        $this->assertTrue(
+            is_file($fromUrl . '/file.txt')
+        );
+        $this->assertFalse(
+            is_file($toUrl . '/file.txt')
+        );
+        $this->assertTrue(
+            is_file($fromUrl . '/secondLevelDir/secondLevelFile.txt')
+        );
+        $this->assertFalse(
+            is_file($toUrl . '/secondLevelDir/secondLevelFile.txt')
+        );
+
+        $this->assertTrue(
+            $fileSystemHelper->move(
+                $fromUrl,
+                $toUrl
+            )
+        );
+
+        $this->assertFalse(
+            is_file($fromUrl . '/file.txt')
+        );
+        $this->assertTrue(
+            is_file($toUrl . '/file.txt')
+        );
+        $this->assertFalse(
+            is_file($fromUrl . '/secondLevelDir/secondLevelFile.txt')
+        );
+        $this->assertTrue(
+            is_file($toUrl . '/secondLevelDir/secondLevelFile.txt')
+        );
+    }
 
 }

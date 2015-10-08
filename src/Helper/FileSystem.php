@@ -93,6 +93,7 @@ class FileSystem
 
             return @rmdir($fileOrDirectory);
         }
+        return false;
     }
 
     /**
