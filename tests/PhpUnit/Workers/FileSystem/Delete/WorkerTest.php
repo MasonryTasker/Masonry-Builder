@@ -13,12 +13,12 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Delete;
 
+use Foundry\Masonry\Builder\Helper\FileSystem;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\FileSystem\Delete\Worker;
 use Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
-use org\bovigo\vfs\vfsStream;
 use React\Promise\Deferred;
 
 /**
@@ -102,6 +102,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -132,33 +133,33 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFile = 'root/test/file';
+        $testFile = 'schema://root/test';
 
-        $root = vfsStream::setup('root', 0777);
-        $root->addChild(vfsStream::create([ 'test' => ['file' => 'test file']]));
-        $description = new Description(vfsStream::url($testFile));
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('delete')
+            ->with($testFile)
+            ->will($this->returnValue(true));
+
+        $description = new Description($testFile);
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
         // The tests
-        $this->assertTrue(
-            $root->hasChild($testFile)
-        );
 
         $this->assertTrue(
             $processDeferred($deferred, $task),
             $failureMessage
         );
 
-        $this->assertFalse(
-            $root->hasChild($testFile)
-        );
-
         // Test messages
         $this->assertSame(
-            "Deleted file or directory 'vfs://{$testFile}'",
+            "Deleted file or directory '{$testFile}'",
             $successMessage
         );
 
@@ -168,7 +169,7 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Deleting file or directory 'vfs://{$testFile}'",
+            "Deleting file or directory '{$testFile}'",
             $notifyMessage
         );
     }
@@ -177,6 +178,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -207,30 +209,28 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFile = 'root/test-file';
+        $testFile = 'schema://root/test';
 
-        $root = vfsStream::setup('root', 0000);
-        $root->addChild(vfsStream::create([ 'test-file' => 'test file']));
-        $description = new Description(vfsStream::url($testFile));
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('delete')
+            ->with($testFile)
+            ->will($this->returnValue(false));
+
+        $description = new Description($testFile);
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
         // The tests
-        $this->assertTrue(
-            $root->hasChild($testFile)
-        );
-
         $this->assertFalse(
             $processDeferred($deferred, $task),
             $successMessage
         );
-
-        $this->assertTrue(
-            $root->hasChild($testFile)
-        );
-
         // Test messages
         $this->assertSame(
             "",
@@ -238,12 +238,12 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "File or directory 'vfs://{$testFile}' could not be deleted",
+            "File or directory '{$testFile}' could not be deleted",
             $failureMessage
         );
 
         $this->assertSame(
-            "Deleting file or directory 'vfs://{$testFile}'",
+            "Deleting file or directory '{$testFile}'",
             $notifyMessage
         );
     }
