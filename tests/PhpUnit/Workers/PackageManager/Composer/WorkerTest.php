@@ -102,8 +102,8 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::setComposerHome
-     * @uses Foundry\Masonry\Builder\Helpers\Environment
-     * @uses Foundry\Masonry\Builder\Helpers\EnvironmentTrait
+     * @uses Foundry\Masonry\Builder\Helper\Environment
+     * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::getEnvironment
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::setEnvironment
      * @return void
@@ -143,8 +143,8 @@ class WorkerTest extends GenericWorkerTestCase
     /**
      * @test
      * @covers ::setComposerHome
-     * @uses Foundry\Masonry\Builder\Helpers\Environment
-     * @uses Foundry\Masonry\Builder\Helpers\EnvironmentTrait
+     * @uses Foundry\Masonry\Builder\Helper\Environment
+     * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::getEnvironment
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::setEnvironment
      * @expectedException \Exception
@@ -247,61 +247,72 @@ class WorkerTest extends GenericWorkerTestCase
         );
     }
 
-//    public function testProcessDeferred()
-//    {
-//        // Set up the deferred so we can see whats happening
-//        $successMessage = '';
-//        $failureMessage = '';
-//        $notifyMessage = '';
-//
-//        $successClosure = function ($message) use (&$successMessage) {
-//            $successMessage = $message;
-//        };
-//        $failureClosure = function ($message) use (&$failureMessage) {
-//            $failureMessage = $message;
-//        };
-//        $notifyClosure = function ($message) use (&$notifyMessage) {
-//            $notifyMessage = $message;
-//        };
-//
-//        $deferred = new Deferred();
-//        $deferred->promise()->then(
-//            $successClosure,
-//            $failureClosure,
-//            $notifyClosure
-//        );
-//
-//        // Mocks
-//        $worker = new Worker();
-//
-//        $composer = $this
-//            ->getMockBuilder(Composer::class)
-//            ->disableOriginalConstructor()
-//            ->disableProxyingToOriginalMethods()
-//            ->getMockForAbstractClass();
-//        $composer
-//            ->expects($this->any())
-//            ->method('run')
-//            ->with($this->anything())
-//            ->will($this->returnValue(true));
-//        $worker->setComposer($composer);
-//
-//        $fileSystem = vfsStream::setup('root');
-//        $fileSystem->addChild(vfsStream::create(['composer.json' => '']));
-//
-//        $task = new Task(
-//            new Description(
-//                'install',
-//                $fileSystem->url()
-//            )
-//        );
-//
-//
-//        // Tests
-//        $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
-//        $this->assertTrue(
-//            $processDeferred($deferred, $task),
-//            $failureMessage
-//        );
-//    }
+    /**
+     * @test
+     * @covers ::processDeferred
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::setComposerHome
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::getEnvironment
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::getComposer
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::setComposer
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
+     * @uses Foundry\Masonry\Builder\Helper\Environment
+     * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
+     * @return void
+     */
+    public function testProcessDeferred()
+    {
+        // Set up the deferred so we can see whats happening
+        $successMessage = '';
+        $failureMessage = '';
+        $notifyMessage = '';
+
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+        };
+        $notifyClosure = function ($message) use (&$notifyMessage) {
+            $notifyMessage = $message;
+        };
+
+        $deferred = new Deferred();
+        $deferred->promise()->then(
+            $successClosure,
+            $failureClosure,
+            $notifyClosure
+        );
+
+        // Mocks
+        $worker = new Worker();
+
+        $composer = $this->getMock(Composer::class);
+        $composer
+            ->expects($this->any())
+            ->method('run')
+            ->with($this->anything())
+            ->will($this->returnValue(true));
+        $worker->setComposer($composer);
+
+        $fileSystem = vfsStream::setup('root');
+        $fileSystem->addChild(vfsStream::create([
+            'test' => [
+                'composer.json' => ''
+            ]
+        ]));
+
+        $task = new Task(
+            new Description(
+                'install',
+                vfsStream::url('root/test')
+            )
+        );
+
+        // Tests
+        $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
+        $this->assertTrue(
+            $processDeferred($deferred, $task),
+            $failureMessage
+        );
+    }
 }
