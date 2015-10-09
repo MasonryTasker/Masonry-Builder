@@ -13,12 +13,12 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Copy;
 
+use Foundry\Masonry\Builder\Helper\FileSystem;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\FileSystem\Copy\Worker;
 use Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
-use org\bovigo\vfs\vfsStream;
 use React\Promise\Deferred;
 
 /**
@@ -102,7 +102,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
-     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Worker::recursiveCopy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -133,46 +133,35 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFrom = 'root/test';
-        $testTo = 'root/test-copy';
+        $testFrom = 'schema://root/test';
+        $testTo = 'schema://root/test-copy';
 
-        $root = vfsStream::setup('root', 0777);
-        $root->addChild(vfsStream::create(['test' => ['file' => 'test file']]));
-        $description = new Description(
-            vfsStream::url($testFrom),
-            vfsStream::url($testTo)
-        );
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('copy')
+            ->with($testFrom, $testTo)
+            ->will($this->returnValue(true));
+
+        $description = new Description($testFrom, $testTo);
+
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-        // The tests
-        $this->assertTrue(
-            $root->hasChild($testFrom . '/file')
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testTo . '/file')
-        );
 
         $this->assertTrue(
             $processDeferred($deferred, $task),
             $failureMessage
         );
 
-        $this->assertTrue(
-            $root->hasChild($testFrom . '/file')
-        );
-
-        $this->assertTrue(
-            $root->hasChild($testTo . '/file')
-        );
-
 
         // Test messages
         $this->assertSame(
-            "Copied 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Copied '{$testFrom}' to '{$testTo}'",
             $successMessage
         );
 
@@ -182,7 +171,7 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Copying 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Copying '{$testFrom}' to '{$testTo}'",
             $notifyMessage
         );
     }
@@ -191,7 +180,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
-     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Worker::recursiveCopy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -222,40 +211,29 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFrom = 'root/test';
-        $testTo = 'root/test-copy';
+        $testFrom = 'schema://root/test';
+        $testTo = 'schema://root/test-copy';
 
-        $root = vfsStream::setup('root', 0000);
-        $root->addChild(vfsStream::create(['test' => ['file' => 'test file']]));
-        $description = new Description(
-            vfsStream::url($testFrom),
-            vfsStream::url($testTo)
-        );
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('copy')
+            ->with($testFrom, $testTo)
+            ->will($this->throwException(new \Exception()));
+
+        $description = new Description($testFrom, $testTo);
+
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-        // The tests
-        $this->assertTrue(
-            $root->hasChild($testFrom . '/file')
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testTo . '/file')
-        );
 
         $this->assertFalse(
             $processDeferred($deferred, $task),
             $successMessage
-        );
-
-        $this->assertTrue(
-            $root->hasChild($testFrom . '/file')
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testTo . '/file')
         );
 
 
@@ -266,12 +244,12 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Could not copy 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Could not copy '{$testFrom}' to '{$testTo}'",
             $failureMessage
         );
 
         $this->assertSame(
-            "Copying 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Copying '{$testFrom}' to '{$testTo}'",
             $notifyMessage
         );
     }
@@ -280,7 +258,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
-     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Worker::recursiveCopy
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredPartialSuccess()
@@ -308,27 +286,22 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFrom = 'root/test';
-        $testTo = 'root/test-copy';
+        $testFrom = 'schema://root/test';
+        $testTo = 'schema://root/test-copy';
 
-        $root = vfsStream::setup('root', 0777);
-        $root->addChild(vfsStream::create(['test' => ['file' => 'test file']]));
-        $description = new Description(
-            vfsStream::url($testFrom),
-            vfsStream::url($testTo)
-        );
-        $task = new Task($description);
-
-        // Mock the worker and replace _just_ the recursiveCopy because I don't know how to make that return false
-        $worker = $this->getMock(Worker::class, ['recursiveCopy']);
-        $worker
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
             ->expects($this->once())
-            ->method('recursiveCopy')
-            ->with(
-                vfsStream::url($testFrom),
-                vfsStream::url($testTo)
-            )
+            ->method('copy')
+            ->with($testFrom, $testTo)
             ->will($this->returnValue(false));
+
+        $description = new Description($testFrom, $testTo);
+
+        $task = new Task($description);
+        $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
@@ -339,7 +312,7 @@ class WorkerTest extends GenericWorkerTestCase
 
         // Test messages
         $this->assertSame(
-            "Copied 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Copied '{$testFrom}' to '{$testTo}'",
             $successMessage
         );
 
@@ -352,158 +325,5 @@ class WorkerTest extends GenericWorkerTestCase
             "Directory permissions were not applied correctly",
             $notifyMessage
         );
-    }
-
-    /**
-     * @test
-     * @covers ::recursiveCopy
-     * @return void
-     */
-    public function testRecursiveCopy()
-    {
-
-        $root = vfsStream::setup('root', 0755);
-        $root->addChild(vfsStream::create([
-            'from' => [
-                'file' => 'file contents',
-                'subdirectory' => [
-                    'another-file' => 'more file contents',
-                ],
-            ],
-            'to' => [
-
-            ],
-        ]));
-
-        $worker = new Worker();
-
-        $this->assertTrue(
-            $root->hasChild('from/subdirectory/another-file')
-        );
-        $this->assertFalse(
-            $root->hasChild('to/subdirectory/another-file')
-        );
-
-        $recursiveCopy = $this->getObjectMethod($worker, 'recursiveCopy');
-        $this->assertTrue(
-            $recursiveCopy(
-                vfsStream::url('root/from'),
-                vfsStream::url('root/to')
-            )
-        );
-
-        $this->assertTrue(
-            $root->hasChild('from/subdirectory/another-file')
-        );
-        $this->assertTrue(
-            $root->hasChild('to/subdirectory/another-file')
-        );
-
-    }
-
-    /**
-     * @test
-     * @covers ::recursiveCopy
-     * @expectedException \Exception
-     * @expectedExceptionMessage Could not copy file
-     * @return void
-     */
-    public function testRecursiveCopyFailFile()
-    {
-
-        $root = vfsStream::setup('root', 0755);
-        $root->addChild(vfsStream::create([
-            'from' => [
-                'file' => 'file contents',
-            ],
-            'to' => [],
-        ]));
-
-        $root->getChild('to')->chmod('0000');
-
-        $worker = new Worker();
-
-        $this->assertTrue(
-            $root->hasChild('from/file')
-        );
-        $this->assertFalse(
-            $root->hasChild('to/file')
-        );
-
-        $recursiveCopy = $this->getObjectMethod($worker, 'recursiveCopy');
-
-        $recursiveCopy(
-            vfsStream::url('root/from'),
-            vfsStream::url('root/to')
-        );
-    }
-
-    /**
-     * @test
-     * @covers ::recursiveCopy
-     * @expectedException \Exception
-     * @expectedExceptionMessage Could not create directory
-     * @return void
-     */
-    public function testRecursiveCopyFailDirectory()
-    {
-
-        $root = vfsStream::setup('root', 0755);
-        $root->addChild(vfsStream::create([
-            'from' => [
-                'subdirectory' => [
-                    'another-file' => 'more file contents',
-                ],
-            ],
-            'to' => [],
-        ]));
-
-        $root->getChild('to')->chmod('0000');
-
-        $worker = new Worker();
-
-        $this->assertTrue(
-            $root->hasChild('from/subdirectory/another-file')
-        );
-        $this->assertFalse(
-            $root->hasChild('to/subdirectory/another-file')
-        );
-
-        $recursiveCopy = $this->getObjectMethod($worker, 'recursiveCopy');
-
-        $recursiveCopy(
-            vfsStream::url('root/from'),
-            vfsStream::url('root/to')
-        );
-
-    }
-
-    /**
-     * @test
-     * @covers ::recursiveCopy
-     * @expectedException \Exception
-     * @expectedExceptionMessage does not exist or is not accessible
-     * @return void
-     */
-    public function testRecursiveCopyFailNotExist()
-    {
-
-        $root = vfsStream::setup('root', 0755);
-        $root->addChild(vfsStream::create([
-            'to' => [],
-        ]));
-
-        $root->getChild('to')->chmod('0000');
-
-        $worker = new Worker();
-
-        $recursiveCopy = $this->getObjectMethod($worker, 'recursiveCopy');
-        $this->assertTrue(
-            $recursiveCopy(
-                vfsStream::url('root/from'),
-                vfsStream::url('root/to')
-            )
-        );
-
     }
 }

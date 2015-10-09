@@ -13,12 +13,15 @@
 
 namespace Foundry\Masonry\Builder\Workers\FileSystem\Copy;
 
+use Foundry\Masonry\Builder\Helper\FileSystemTrait;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
 
 class Worker extends GenericWorker
 {
+
+    use FileSystemTrait;
 
     /**
      * Make a directory as described in the task description
@@ -34,7 +37,7 @@ class Worker extends GenericWorker
         $deferred->notify("Copying '{$description->getFrom()}' to '{$description->getTo()}'");
 
         try {
-            if (!$this->recursiveCopy($description->getFrom(), $description->getTo())) {
+            if (!$this->getFileSystem()->copy($description->getFrom(), $description->getTo())) {
                 $deferred->notify("Directory permissions were not applied correctly");
             }
         } catch (\Exception $e) {
@@ -57,53 +60,5 @@ class Worker extends GenericWorker
         return [
             Description::class
         ];
-    }
-
-    /**
-     * Copy a file or a directory one file at a time
-     * @param $from
-     * @param $to
-     * @throws \Exception
-     * @return bool
-     */
-    protected function recursiveCopy($from, $to)
-    {
-        if (is_file($from)) {
-            if (@copy($from, $to)) {
-                return true;
-            }
-            throw new \Exception("Could not copy file '$from' to '$to'");
-        }
-
-        if (is_dir($from)) {
-            $returnValue = true;
-
-            // Does the "to" directory need to be created
-            $makingDirectory = !is_dir($to);
-            if ($makingDirectory) {
-                if (!mkdir($to, 0777, true)) {
-                    throw new \Exception("Could not create directory '$to'");
-                }
-            }
-
-            // Step through the directory
-            $fromDirectory = opendir($from);
-            while (false !== ($file = readdir($fromDirectory))) {
-                if (($file != '.') && ($file != '..')) {
-                    $returnValue = $returnValue && $this->recursiveCopy("$from/$file", "$to/$file");
-                }
-            }
-
-            closedir($fromDirectory);
-
-            // Fix permissions
-            if ($makingDirectory) {
-                $returnValue = $returnValue && chmod($to, fileperms($from));
-            }
-
-            return $returnValue;
-        }
-
-        throw new \Exception("'$from' does not exist or is not accessible");
     }
 }
