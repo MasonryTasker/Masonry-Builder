@@ -13,12 +13,15 @@
 
 namespace Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory;
 
+use Foundry\Masonry\Builder\Helper\FileSystemTrait;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
 
 class Worker extends GenericWorker
 {
+
+    use FileSystemTrait;
 
     /**
      * Make a directory as described in the task description
@@ -33,7 +36,7 @@ class Worker extends GenericWorker
 
         $deferred->notify("Creating directory '{$description->getName()}'");
 
-        if (mkdir($description->getName(), 0777, true)) {
+        if ($this->getFileSystem()->makeDirectory($description->getName())) {
             $deferred->resolve("Created directory '{$description->getName()}'");
             return true;
         }

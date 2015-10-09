@@ -13,6 +13,7 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\MakeDirectory;
 
+use Foundry\Masonry\Builder\Helper\FileSystem;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Worker;
 use Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description;
@@ -102,6 +103,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -132,32 +134,32 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testDir = 'root/test/dir';
+        $testDir = 'schema://root/test';
 
-        $root = vfsStream::setup('root', 0777);
-        $description = new Description(vfsStream::url($testDir));
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('makeDirectory')
+            ->with($testDir)
+            ->will($this->returnValue(true));
+
+        $description = new Description($testDir);
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
         // The tests
-        $this->assertFalse(
-            $root->hasChild($testDir)
-        );
-
         $this->assertTrue(
             $processDeferred($deferred, $task),
             $failureMessage
         );
 
-        $this->assertTrue(
-            $root->hasChild($testDir)
-        );
-
         // Test messages
         $this->assertSame(
-            "Created directory 'vfs://{$testDir}'",
+            "Created directory '{$testDir}'",
             $successMessage
         );
 
@@ -167,7 +169,7 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Creating directory 'vfs://{$testDir}'",
+            "Creating directory '{$testDir}'",
             $notifyMessage
         );
     }
@@ -176,6 +178,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -206,27 +209,26 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testDir = 'root/test/dir';
+        $testDir = 'schema://root/test';
 
-        $root = vfsStream::setup('root', 0000);
-        $description = new Description(vfsStream::url($testDir));
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('makeDirectory')
+            ->with($testDir)
+            ->will($this->returnValue(false));
+
+        $description = new Description($testDir);
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
-
-        // The tests
-        $this->assertFalse(
-            $root->hasChild($testDir)
-        );
 
         $this->assertFalse(
             $processDeferred($deferred, $task),
             $successMessage
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testDir)
         );
 
         // Test messages
@@ -236,12 +238,12 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Directory 'vfs://{$testDir}' could not be created",
+            "Directory '{$testDir}' could not be created",
             $failureMessage
         );
 
         $this->assertSame(
-            "Creating directory 'vfs://{$testDir}'",
+            "Creating directory '{$testDir}'",
             $notifyMessage
         );
     }
