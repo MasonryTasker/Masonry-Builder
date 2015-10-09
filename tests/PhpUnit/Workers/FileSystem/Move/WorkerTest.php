@@ -13,6 +13,7 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Move;
 
+use Foundry\Masonry\Builder\Helper\FileSystem;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\FileSystem\Move\Worker;
 use Foundry\Masonry\Builder\Workers\FileSystem\Move\Description;
@@ -102,6 +103,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Move\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -132,46 +134,34 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFrom = 'root/test';
-        $testTo   = 'root/test-copy';
+        $testFrom = 'schema://root/test';
+        $testTo = 'schema://root/test-copy';
 
-        $root = vfsStream::setup('root', 0777);
-        $root->addChild(vfsStream::create([ 'test' => ['file' => 'test file']]));
-        $description = new Description(
-            vfsStream::url($testFrom),
-            vfsStream::url($testTo)
-        );
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('move')
+            ->with($testFrom, $testTo)
+            ->will($this->returnValue(true));
+
+        $description = new Description($testFrom, $testTo);
+
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
         // The tests
         $this->assertTrue(
-            $root->hasChild($testFrom.'/file')
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testTo.'/file')
-        );
-
-        $this->assertTrue(
             $processDeferred($deferred, $task),
             $failureMessage
         );
 
-        $this->assertFalse(
-            $root->hasChild($testFrom.'/file')
-        );
-
-        $this->assertTrue(
-            $root->hasChild($testTo.'/file')
-        );
-
-
         // Test messages
         $this->assertSame(
-            "Moved 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Moved '{$testFrom}' to '{$testTo}'",
             $successMessage
         );
 
@@ -181,7 +171,7 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Moving 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Moving '{$testFrom}' to '{$testTo}'",
             $notifyMessage
         );
     }
@@ -190,6 +180,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @test
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Move\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -220,40 +211,30 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         // The rest of test data
-        $testFrom = 'root/test';
-        $testTo   = 'root/test-copy';
+        $testFrom = 'schema://root/test';
+        $testTo = 'schema://root/test-copy';
 
-        $root = vfsStream::setup('root', 0000);
-        $root->addChild(vfsStream::create([ 'test' => ['file' => 'test file']]));
-        $description = new Description(
-            vfsStream::url($testFrom),
-            vfsStream::url($testTo)
-        );
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('move')
+            ->with($testFrom, $testTo)
+            ->will($this->returnValue(false));
+
+        $description = new Description($testFrom, $testTo);
+
         $task = new Task($description);
         $worker = new Worker();
+        $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
         // The tests
-        $this->assertTrue(
-            $root->hasChild($testFrom.'/file')
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testTo.'/file')
-        );
 
         $this->assertFalse(
             $processDeferred($deferred, $task),
             $successMessage
-        );
-
-        $this->assertTrue(
-            $root->hasChild($testFrom.'/file')
-        );
-
-        $this->assertFalse(
-            $root->hasChild($testTo.'/file')
         );
 
 
@@ -264,12 +245,12 @@ class WorkerTest extends GenericWorkerTestCase
         );
 
         $this->assertSame(
-            "Could not move 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Could not move '{$testFrom}' to '{$testTo}'",
             $failureMessage
         );
 
         $this->assertSame(
-            "Moving 'vfs://{$testFrom}' to 'vfs://{$testTo}'",
+            "Moving '{$testFrom}' to '{$testTo}'",
             $notifyMessage
         );
     }

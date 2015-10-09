@@ -13,12 +13,14 @@
 
 namespace Foundry\Masonry\Builder\Workers\FileSystem\Move;
 
+use Foundry\Masonry\Builder\Helper\FileSystemTrait;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
 
 class Worker extends GenericWorker
 {
+    use FileSystemTrait;
 
     /**
      * Make a directory as described in the task description
@@ -33,7 +35,7 @@ class Worker extends GenericWorker
 
         $deferred->notify("Moving '{$description->getFrom()}' to '{$description->getTo()}'");
 
-        if (@rename($description->getFrom(), $description->getTo())) {
+        if ($this->getFileSystem()->move($description->getFrom(), $description->getTo())) {
             $deferred->resolve("Moved '{$description->getFrom()}' to '{$description->getTo()}'");
             return true;
         }
