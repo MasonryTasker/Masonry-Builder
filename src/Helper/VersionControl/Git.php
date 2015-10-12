@@ -50,7 +50,9 @@ class Git implements VersionControlSystem
     public function checkout($workingCopy, $repository = null, $identifier = null)
     {
         if($repository) {
-            $this->cloneRepository($repository, $workingCopy);
+            if(!$this->cloneRepository($repository, $workingCopy)) {
+                return false;
+            }
         }
         $git            = escapeshellcmd('git');
         $checkout       = escapeshellarg('checkout');
