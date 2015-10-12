@@ -10,6 +10,8 @@
 
 namespace Foundry\Masonry\Builder\Helper\VersionControl;
 
+use Foundry\Masonry\Builder\Helper\SystemTrait;
+
 /**
  * Class Git
  *
@@ -18,6 +20,8 @@ namespace Foundry\Masonry\Builder\Helper\VersionControl;
  */
 class Git implements VersionControlSystem
 {
+
+    use SystemTrait;
 
     /**
      * Clone a repository
@@ -33,10 +37,7 @@ class Git implements VersionControlSystem
         $from      = escapeshellarg($fromLocation);
         $to        = escapeshellarg($toLocation);
 
-        $returnValue = null;
-        $unusedOutput = null;
-        exec("$git $clone $recursive $from $to", $unusedOutput, $returnValue);
-        return $returnValue;
+        return 0 == $this->getSystem()->exec("$git $clone $recursive $from $to");
     }
 
     /**
@@ -51,16 +52,13 @@ class Git implements VersionControlSystem
         if($repository) {
             $this->cloneRepository($repository, $workingCopy);
         }
-        $git          = escapeshellcmd('git');
-        $checkout     = escapeshellarg('checkout');
-        $detach       = escapeshellarg('--detach');
-        $setDirectory = escapeshellarg('-C');
-        $directory    = escapeshellarg($workingCopy);
-        $id           = $identifier ? escapeshellarg($identifier) : '';
+        $git            = escapeshellcmd('git');
+        $checkout       = escapeshellarg('checkout');
+        $detach         = escapeshellarg('--detach');
+        $setDirectoryTo = escapeshellarg('-C');
+        $directory      = escapeshellarg($workingCopy);
+        $id             = $identifier ? escapeshellarg($identifier) : '';
 
-        $returnValue = null;
-        $unusedOutput = null;
-        exec("$git $checkout $detach $setDirectory $directory $id", $unusedOutput, $returnValue);
-        return $returnValue;
+        return 0 == $this->getSystem()->exec("$git $checkout $detach $setDirectoryTo $directory $id");
     }
 }
