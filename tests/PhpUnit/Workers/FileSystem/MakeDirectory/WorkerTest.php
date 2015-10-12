@@ -118,15 +118,12 @@ class WorkerTest extends GenericWorkerTestCase
 
         $successClosure = function ($message) use (&$successMessage) {
             $successMessage = $message;
-
         };
         $failureClosure = function ($message) use (&$failureMessage) {
             $failureMessage = $message;
-
         };
         $notifyClosure  = function ($message) use (&$notifyMessage) {
             $notifyMessage  = $message;
-
         };
 
         $deferred = new Deferred();
@@ -193,15 +190,12 @@ class WorkerTest extends GenericWorkerTestCase
 
         $successClosure = function ($message) use (&$successMessage) {
             $successMessage = $message;
-
         };
         $failureClosure = function ($message) use (&$failureMessage) {
             $failureMessage = $message;
-
         };
         $notifyClosure  = function ($message) use (&$notifyMessage) {
             $notifyMessage  = $message;
-
         };
 
         $deferred = new Deferred();
