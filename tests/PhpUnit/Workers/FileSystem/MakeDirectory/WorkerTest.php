@@ -14,6 +14,7 @@
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\MakeDirectory;
 
 use Foundry\Masonry\Builder\Helper\FileSystem;
+use Foundry\Masonry\Builder\Tests\PhpUnit\Helper\FileSystemTestTrait;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Worker;
 use Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description;
@@ -30,10 +31,12 @@ use React\Promise\Deferred;
 class WorkerTest extends GenericWorkerTestCase
 {
 
+    use FileSystemTestTrait;
+
     /**
      * @return Worker
      */
-    protected function getWorker()
+    protected function getTestSubject()
     {
         return new Worker();
     }
@@ -45,7 +48,7 @@ class WorkerTest extends GenericWorkerTestCase
      */
     public function testGetDescriptionTypes()
     {
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
 
         $this->assertTrue(
             is_array($worker->getDescriptionTypes())
@@ -85,7 +88,7 @@ class WorkerTest extends GenericWorkerTestCase
         //
         // Set up
         //
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
         $isTaskDescriptionValid = $this->getObjectMethod($worker, 'isTaskDescriptionValid');
 
         //
@@ -146,7 +149,7 @@ class WorkerTest extends GenericWorkerTestCase
 
         $description = new Description($testDir);
         $task = new Task($description);
-        $worker = new Worker();
+        $worker = $this->getTestSubject();
         $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
@@ -221,7 +224,7 @@ class WorkerTest extends GenericWorkerTestCase
 
         $description = new Description($testDir);
         $task = new Task($description);
-        $worker = new Worker();
+        $worker = $this->getTestSubject();
         $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');

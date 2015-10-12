@@ -14,12 +14,12 @@
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\FileSystem\Move;
 
 use Foundry\Masonry\Builder\Helper\FileSystem;
+use Foundry\Masonry\Builder\Tests\PhpUnit\Helper\FileSystemTestTrait;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\FileSystem\Move\Worker;
 use Foundry\Masonry\Builder\Workers\FileSystem\Move\Description;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
-use org\bovigo\vfs\vfsStream;
 use React\Promise\Deferred;
 
 /**
@@ -30,10 +30,12 @@ use React\Promise\Deferred;
 class WorkerTest extends GenericWorkerTestCase
 {
 
+    use FileSystemTestTrait;
+
     /**
      * @return Worker
      */
-    protected function getWorker()
+    protected function getTestSubject()
     {
         return new Worker();
     }
@@ -45,7 +47,7 @@ class WorkerTest extends GenericWorkerTestCase
      */
     public function testGetDescriptionTypes()
     {
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
 
         $this->assertTrue(
             is_array($worker->getDescriptionTypes())
@@ -85,7 +87,7 @@ class WorkerTest extends GenericWorkerTestCase
         //
         // Set up
         //
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
         $isTaskDescriptionValid = $this->getObjectMethod($worker, 'isTaskDescriptionValid');
 
         //
@@ -148,7 +150,7 @@ class WorkerTest extends GenericWorkerTestCase
         $description = new Description($testFrom, $testTo);
 
         $task = new Task($description);
-        $worker = new Worker();
+        $worker = $this->getTestSubject();
         $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
@@ -225,7 +227,7 @@ class WorkerTest extends GenericWorkerTestCase
         $description = new Description($testFrom, $testTo);
 
         $task = new Task($description);
-        $worker = new Worker();
+        $worker = $this->getTestSubject();
         $worker->setFileSystem($fileSystem);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
@@ -236,7 +238,6 @@ class WorkerTest extends GenericWorkerTestCase
             $processDeferred($deferred, $task),
             $successMessage
         );
-
 
         // Test messages
         $this->assertSame(

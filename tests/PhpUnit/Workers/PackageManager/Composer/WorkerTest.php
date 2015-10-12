@@ -14,6 +14,7 @@
 namespace PhpUnit\Workers\PackageManager\Composer;
 
 use Foundry\Masonry\Builder\Helper\Environment;
+use Foundry\Masonry\Builder\Tests\PhpUnit\Helper\EnvironmentTestTrait;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker;
 use Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description;
@@ -30,10 +31,13 @@ use React\Promise\Deferred;
  */
 class WorkerTest extends GenericWorkerTestCase
 {
+
+    use EnvironmentTestTrait;
+
     /**
      * @return Worker
      */
-    protected function getWorker()
+    protected function getTestSubject()
     {
         return new Worker();
     }
@@ -45,7 +49,7 @@ class WorkerTest extends GenericWorkerTestCase
      */
     public function testGetDescriptionTypes()
     {
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
 
         $this->assertTrue(
             is_array($worker->getDescriptionTypes())
@@ -85,7 +89,7 @@ class WorkerTest extends GenericWorkerTestCase
         //
         // Set up
         //
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
         $isTaskDescriptionValid = $this->getObjectMethod($worker, 'isTaskDescriptionValid');
 
         //
@@ -197,7 +201,7 @@ class WorkerTest extends GenericWorkerTestCase
      */
     public function testSetComposer()
     {
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
 
         $composer = new Composer();
 
@@ -217,7 +221,7 @@ class WorkerTest extends GenericWorkerTestCase
      */
     public function testGetComposer()
     {
-        $worker = $this->getWorker();
+        $worker = $this->getTestSubject();
 
         $composer = new Composer();
         $getComposer = $this->getObjectMethod($worker, 'getComposer');
@@ -259,7 +263,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
      * @return void
      */
-    public function testProcessDeferred()
+    public function testProcessDeferredSuccess()
     {
         // Set up the deferred so we can see whats happening
         $successMessage = '';
@@ -313,6 +317,108 @@ class WorkerTest extends GenericWorkerTestCase
         $this->assertTrue(
             $processDeferred($deferred, $task),
             $failureMessage
+        );
+
+        $this->assertSame(
+            "Composer 'install' ran successfully",
+            $successMessage
+        );
+
+        $this->assertSame(
+            "",
+            $failureMessage
+        );
+
+        $this->assertSame(
+            "Preparing to run composer 'install'",
+            $notifyMessage
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::processDeferred
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::setComposerHome
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::getEnvironment
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::getComposer
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker::setComposer
+     * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
+     * @uses Foundry\Masonry\Builder\Helper\Environment
+     * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
+     * @return void
+     */
+    public function testProcessDeferredFailure()
+    {
+        // Set up the deferred so we can see whats happening
+        $successMessage = '';
+        $failureMessage = '';
+        $notifyMessage = '';
+
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+        };
+        $notifyClosure = function ($message) use (&$notifyMessage) {
+            $notifyMessage = $message;
+        };
+
+        $deferred = new Deferred();
+        $deferred->promise()->then(
+            $successClosure,
+            $failureClosure,
+            $notifyClosure
+        );
+
+        // Mocks
+        $worker = new Worker();
+
+        $environment = new Environment();
+        $environment->set('COMPOSER_HOME', '');
+
+        $composer = $this->getMock(Composer::class);
+        $composer
+            ->expects($this->any())
+            ->method('run')
+            ->with($this->anything())
+            ->will($this->throwException(new \Exception()));
+        $worker->setComposer($composer);
+
+        $fileSystem = vfsStream::setup('root');
+        $fileSystem->addChild(vfsStream::create([
+            'test' => [
+                'composer.json' => ''
+            ]
+        ]));
+
+        $task = new Task(
+            new Description(
+                'install',
+                vfsStream::url('root/test')
+            )
+        );
+
+        // Tests
+        $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
+        $this->assertFalse(
+            $processDeferred($deferred, $task),
+            $failureMessage
+        );
+
+        $this->assertSame(
+            "",
+            $successMessage
+        );
+
+        $this->assertSame(
+            "Composer 'install' failed",
+            $failureMessage
+        );
+
+        $this->assertSame(
+            "Preparing to run composer 'install'",
+            $notifyMessage
         );
     }
 }
