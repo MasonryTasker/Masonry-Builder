@@ -20,7 +20,6 @@ use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
 use React\Promise\Deferred;
 
-
 /**
  * Class WorkerTest
  *
@@ -250,5 +249,4 @@ class WorkerTest extends GenericWorkerTestCase
             $notifyMessage
         );
     }
-
 }

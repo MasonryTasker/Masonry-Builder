@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Helper;
 
-
 /**
  * Class System
  * ${CARET}
@@ -35,5 +34,4 @@ class System
         exec($command, $output, $returnVar);
         return $returnVar;
     }
-
 }

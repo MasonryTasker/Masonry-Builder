@@ -14,7 +14,6 @@ namespace Foundry\Masonry\Builder\Tests\PhpUnit\Helper;
 use Foundry\Masonry\Builder\Helper\System;
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 
-
 /**
  * Class SystemTest
  * @package Foundry\Masonry-Builder
@@ -51,5 +50,4 @@ class SystemTest extends TestCase
             $testMessage
         );
     }
-
 }

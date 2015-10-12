@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Helper\VersionControl;
 
-
 /**
  * Interface VersionControlSystem
  * All Version Control Systems should work in 'roughly' the same way. This interface

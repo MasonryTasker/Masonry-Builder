@@ -15,7 +15,6 @@ use Foundry\Masonry\Builder\Helper\FileSystem;
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use org\bovigo\vfs\vfsStream;
 
-
 /**
  * Class FileSystemTest
  * @package Foundry\Masonry-Builder
@@ -345,5 +344,4 @@ class FileSystemTest extends TestCase
             is_file($toUrl . '/secondLevelDir/secondLevelFile.txt')
         );
     }
-
 }

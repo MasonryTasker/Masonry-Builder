@@ -15,7 +15,6 @@ use Foundry\Masonry\Builder\Helper\VersionControl\Git;
 use Foundry\Masonry\Builder\Helper\VersionControl\GitTrait;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Helper\TestTrait;
 
-
 /**
  * Trait GitTestTrait
  *

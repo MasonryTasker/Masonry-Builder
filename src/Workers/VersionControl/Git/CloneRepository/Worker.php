@@ -16,7 +16,6 @@ use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
 
-
 /**
  * Class Worker
  * Clone a repository to a directory

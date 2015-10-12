@@ -14,7 +14,6 @@ namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\VersionControl\Git\Clone
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 use Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description;
 
-
 /**
  * Class DescriptionTest
  *
@@ -81,5 +80,4 @@ class DescriptionTest extends TestCase
             $description->getDirectory()
         );
     }
-
 }

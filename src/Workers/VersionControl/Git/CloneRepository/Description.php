@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository;
 
-
 use Foundry\Masonry\Builder\Workers\GenericDescription;
 
 /**
@@ -61,5 +60,4 @@ class Description extends GenericDescription
     {
         return $this->directory;
     }
-
 }

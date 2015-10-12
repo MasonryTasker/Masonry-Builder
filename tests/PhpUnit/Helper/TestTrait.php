@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Helper;
 
-
 /**
  * Class TestTrait
  * ${CARET}

@@ -14,7 +14,6 @@ namespace Foundry\Masonry\Builder\Tests\PhpUnit\Helper;
 use Foundry\Masonry\Builder\Helper\Environment;
 use Foundry\Masonry\Builder\Helper\EnvironmentTrait;
 
-
 /**
  * Trait EnvironmentTestTrait
  * ${CARET}
@@ -84,5 +83,4 @@ trait EnvironmentTestTrait
             $getEnvironment()
         );
     }
-
 }

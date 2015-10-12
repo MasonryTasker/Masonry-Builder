@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Helper\VersionControl;
 
-
 /**
  * Trait GitTrait
  *

@@ -14,7 +14,6 @@ namespace Foundry\Masonry\Builder\Tests\PhpUnit\Helper;
 use Foundry\Masonry\Builder\Helper\System;
 use Foundry\Masonry\Builder\Helper\SystemTrait;
 
-
 /**
  * Trait SystemTestTrait
  * ${CARET}
@@ -84,5 +83,4 @@ trait SystemTestTrait
             $getSystem()
         );
     }
-
 }

@@ -14,7 +14,6 @@ namespace Foundry\Masonry\Builder\Tests\PhpUnit\Helper;
 use Foundry\Masonry\Builder\Helper\Environment;
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 
-
 /**
  * Class EnvironmentTest
  * @package Foundry\Masonry-Builder
@@ -58,6 +57,4 @@ class EnvironmentTest extends TestCase
             $environment->get($key)
         );
     }
-
-
 }

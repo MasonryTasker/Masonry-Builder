@@ -14,7 +14,6 @@ namespace Foundry\Masonry\Builder\Tests\PhpUnit\Helper;
 use Foundry\Masonry\Builder\Helper\FileSystem;
 use Foundry\Masonry\Builder\Helper\FileSystemTrait;
 
-
 /**
  * Trait FileSystemTestTrait
  * ${CARET}
@@ -83,5 +82,4 @@ trait FileSystemTestTrait
             $getFileSystem()
         );
     }
-
 }

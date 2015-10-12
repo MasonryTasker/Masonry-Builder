@@ -16,7 +16,6 @@ use Foundry\Masonry\Builder\Helper\VersionControl\Git;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Helper\SystemTestTrait;
 use Foundry\Masonry\Builder\Tests\PhpUnit\TestCase;
 
-
 /**
  * Class GitTest
  *
@@ -113,5 +112,4 @@ class GitTest extends TestCase
             $git->checkout($directory, $repository, $identifier)
         );
     }
-
 }

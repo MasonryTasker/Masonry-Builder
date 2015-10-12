@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Helper;
 
-
 /**
  * Class FileSystem
  * Wraps file system functionality
@@ -76,15 +75,14 @@ class FileSystem
      */
     public function delete($fileOrDirectory)
     {
-        if(is_file($fileOrDirectory)){
+        if (is_file($fileOrDirectory)) {
             return unlink($fileOrDirectory);
         }
-        if(is_dir($fileOrDirectory)) {
-
+        if (is_dir($fileOrDirectory)) {
             $directory = opendir($fileOrDirectory);
             while (false !== ($file = readdir($directory))) {
                 if (($file != '.') && ($file != '..')) {
-                    if(!$this->delete("$fileOrDirectory/$file")) {
+                    if (!$this->delete("$fileOrDirectory/$file")) {
                         return false;
                     }
                 }
@@ -118,5 +116,4 @@ class FileSystem
     {
         return @rename($from, $to);
     }
-
 }
