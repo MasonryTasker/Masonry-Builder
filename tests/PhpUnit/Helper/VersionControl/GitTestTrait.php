@@ -33,34 +33,34 @@ trait GitTestTrait
     protected abstract function getTestSubject();
 
     /**
-     * @covers ::setGit
+     * @covers Foundry\Masonry\Builder\Helper\VersionControl\GitTrait::setGit
      * @return void
      */
     public function testSetGit()
     {
-        $environmentUser = $this->getTestSubject();
+        $gitUser = $this->getTestSubject();
 
-        $environment = new Git();
-        $environmentUser->setGit($environment);
+        $git = new Git();
+        $gitUser->setGit($git);
 
         $this->assertSame(
-            $environment,
-            $this->getObjectAttribute($environmentUser, 'environment')
+            $git,
+            $this->getObjectAttribute($gitUser, 'git')
         );
     }
 
     /**
-     * @covers ::getGit
-     * @uses Foundry\Masonry\Builder\Helper\GitTrait::setGit
+     * @covers Foundry\Masonry\Builder\Helper\VersionControl\GitTrait::getGit
+     * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait::setGit
      * @return void
      */
     public function testGetGit()
     {
-        $environmentUser = $this->getTestSubject();
+        $gitUser = $this->getTestSubject();
 
-        $environment = new Git();
+        $git = new Git();
 
-        $getGit = $this->getObjectMethod($environmentUser, 'getGit');
+        $getGit = $this->getObjectMethod($gitUser, 'getGit');
 
         $this->assertInstanceOf(
             Git::class,
@@ -68,11 +68,11 @@ trait GitTestTrait
         );
 
         $this->assertNotSame(
-            $environment,
+            $git,
             $getGit()
         );
 
-        $environmentUser->setGit($environment);
+        $gitUser->setGit($git);
 
         $this->assertInstanceOf(
             Git::class,
@@ -80,7 +80,7 @@ trait GitTestTrait
         );
 
         $this->assertSame(
-            $environment,
+            $git,
             $getGit()
         );
     }
