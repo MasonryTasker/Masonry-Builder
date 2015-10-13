@@ -70,6 +70,8 @@ class FileSystem
 
     /**
      * Wraps unlink and rmdir to recursively delete a file or directory
+     * Warning: This will delete every thing that _can_ be deleted. If a single file can't be deleted, everything but
+     * it's containing directories will still be deleted.
      * @param string $fileOrDirectory The file or directory to be deleted
      * @return bool
      */
@@ -82,9 +84,8 @@ class FileSystem
             $directory = opendir($fileOrDirectory);
             while (false !== ($file = readdir($directory))) {
                 if (($file != '.') && ($file != '..')) {
-                    if (!$this->delete("$fileOrDirectory/$file")) {
-                        return false;
-                    }
+                    // The return of any child deletes doesn't matter as rmdir won't complete below.
+                    $this->delete("$fileOrDirectory/$file");
                 }
             }
             closedir($directory);

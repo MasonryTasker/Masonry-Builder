@@ -204,12 +204,8 @@ class FileSystemTest extends TestCase
                     'secondLevelFile.txt' => 'second level file contents'
                 ],
                 'file.txt' => 'file contents'
-            ],
-            'deletableDir' => [
-                'undeletableFile.txt' => 'Can\'t touch this'
             ]
         ]));
-        chmod(vfsStream::url('deletableDir/undeletableFile.txt'), 0000);
 
 
         $delDirUrl = vfsStream::url('root/' . $delDir);
@@ -220,9 +216,7 @@ class FileSystemTest extends TestCase
         $this->assertFalse(
             $fileSystemHelper->delete($delDirUrl . '/not-a-file.txt')
         );
-        $this->assertFalse(
-            $fileSystemHelper->delete(vfsStream::url('deletableDir'))
-        );
+
 
         // Test successes
         $this->assertTrue(
