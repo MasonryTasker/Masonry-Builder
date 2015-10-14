@@ -1,0 +1,6 @@
+- MakeDirectory:
+    name: /tmp/MasonryTest
+
+- Copy:
+    from: /www/vhosts/Masonry-Builder/example.yml.dist
+    to: /tmp/MasonryTest/example.yml.dist
