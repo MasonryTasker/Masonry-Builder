@@ -27,6 +27,7 @@ class FileSystemTest extends TestCase
     /**
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
      * @throws \Exception
      * @return void
      */
@@ -88,6 +89,7 @@ class FileSystemTest extends TestCase
     /**
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
      * @throws \Exception
      * @expectedException \Exception
      * @expectedExceptionMessage Could not copy file
@@ -125,6 +127,7 @@ class FileSystemTest extends TestCase
     /**
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
      * @throws \Exception
      * @expectedException \Exception
      * @expectedExceptionMessage Could not create directory
@@ -162,6 +165,7 @@ class FileSystemTest extends TestCase
     /**
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
      * @throws \Exception
      * @expectedException \Exception
      * @expectedExceptionMessage does not exist or is not accessible
@@ -190,6 +194,7 @@ class FileSystemTest extends TestCase
     /**
      * @test
      * @covers ::delete
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
      * @return void
      */
     public function testDelete()
@@ -261,7 +266,7 @@ class FileSystemTest extends TestCase
         $root = 'root';
         $newDir = 'testDir';
 
-        $mockFileSystem = vfsStream::setup($root, 0777);
+        vfsStream::setup($root, 0777);
         $newDirUrl = vfsStream::url('root/' . $newDir);
 
         $fileSystemHelper = new FileSystem();
@@ -338,4 +343,32 @@ class FileSystemTest extends TestCase
             is_file($toUrl . '/secondLevelDir/secondLevelFile.txt')
         );
     }
+
+    /**
+     * @test
+     * @covers ::isDirectory
+     * @return void
+     */
+    public function testIsDirectory()
+    {
+        $root = 'root';
+        $realDir = 'real-dir';
+        $fakeDir = 'fake-dir';
+
+        $mockFileSystem = vfsStream::setup($root, 0777);
+        $mockFileSystem->addChild(vfsStream::create([
+            $realDir => []
+        ]));
+
+        $fileSystemHelper = new FileSystem();
+
+        $this->assertTrue(
+            $fileSystemHelper->isDirectory(vfsStream::url("$root/$realDir"))
+        );
+        $this->assertFalse(
+            $fileSystemHelper->isDirectory(vfsStream::url("$root/$fakeDir"))
+        );
+    }
+
+
 }

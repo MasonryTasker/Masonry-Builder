@@ -140,6 +140,11 @@ class WorkerTest extends GenericWorkerTestCase
         $fileSystem = $this->getMock(FileSystem::class);
         $fileSystem
             ->expects($this->once())
+            ->method('isDirectory')
+            ->with($testDir)
+            ->will($this->returnValue(false));
+        $fileSystem
+            ->expects($this->once())
             ->method('makeDirectory')
             ->with($testDir)
             ->will($this->returnValue(true));
@@ -160,6 +165,78 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Created directory '{$testDir}'",
+            $successMessage
+        );
+
+        $this->assertSame(
+            "",
+            $failureMessage
+        );
+
+        $this->assertSame(
+            "Creating directory '{$testDir}'",
+            $notifyMessage
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::processDeferred
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @return void
+     */
+    public function testProcessDeferredExists()
+    {
+        // Set up the deferred so we can see whats happening
+        $successMessage = '';
+        $failureMessage = '';
+        $notifyMessage = '';
+
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+        };
+        $notifyClosure  = function ($message) use (&$notifyMessage) {
+            $notifyMessage  = $message;
+        };
+
+        $deferred = new Deferred();
+        $deferred->promise()->then(
+            $successClosure,
+            $failureClosure,
+            $notifyClosure
+        );
+
+        // The rest of test data
+        $testDir = 'schema://root/test';
+
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('isDirectory')
+            ->with($testDir)
+            ->will($this->returnValue(true));
+
+        $description = new Description($testDir);
+        $task = new Task($description);
+        $worker = $this->getTestSubject();
+        $worker->setFileSystem($fileSystem);
+
+        $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
+
+        // The tests
+        $this->assertTrue(
+            $processDeferred($deferred, $task),
+            $failureMessage
+        );
+
+        // Test messages
+        $this->assertSame(
+            "Directory '{$testDir}' already exists",
             $successMessage
         );
 
@@ -210,6 +287,11 @@ class WorkerTest extends GenericWorkerTestCase
 
         /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
         $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('isDirectory')
+            ->with($testDir)
+            ->will($this->returnValue(false));
         $fileSystem
             ->expects($this->once())
             ->method('makeDirectory')

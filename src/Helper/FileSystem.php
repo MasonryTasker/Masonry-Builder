@@ -36,11 +36,11 @@ class FileSystem
             throw new \Exception("Could not copy file '$from' to '$to'");
         }
 
-        if (is_dir($from)) {
+        if ($this->isDirectory($from)) {
             $returnValue = true;
 
             // Does the "to" directory need to be created
-            $makingDirectory = !is_dir($to);
+            $makingDirectory = !$this->isDirectory($to);
             if ($makingDirectory) {
                 if (!$this->makeDirectory($to, 0777, true)) {
                     throw new \Exception("Could not create directory '$to'");
@@ -80,7 +80,7 @@ class FileSystem
         if (is_file($fileOrDirectory)) {
             return unlink($fileOrDirectory);
         }
-        if (is_dir($fileOrDirectory)) {
+        if ($this->isDirectory($fileOrDirectory)) {
             $directory = opendir($fileOrDirectory);
             while (false !== ($file = readdir($directory))) {
                 if (($file != '.') && ($file != '..')) {
@@ -116,5 +116,15 @@ class FileSystem
     public function move($from, $to)
     {
         return @rename($from, $to);
+    }
+
+    /**
+     * Wraps is_dir
+     * @param $directory
+     * @return bool
+     */
+    public function isDirectory($directory)
+    {
+        return @is_dir($directory);
     }
 }

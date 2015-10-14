@@ -36,6 +36,10 @@ class Worker extends GenericWorker
 
         $deferred->notify("Creating directory '{$description->getName()}'");
 
+        if($this->getFileSystem()->isDirectory($description->getName())) {
+            $deferred->resolve("Directory '{$description->getName()}' already exists");
+            return true;
+        }
         if ($this->getFileSystem()->makeDirectory($description->getName())) {
             $deferred->resolve("Created directory '{$description->getName()}'");
             return true;
