@@ -24,7 +24,8 @@
         "psr/log" : "^1.0",
         "foundry/masonry": "^0.0.0",
         "symfony/yaml": "^2.7",
-        "composer/composer": "^1.0.0-alpha10"
+        "composer/composer": "^1.0.0-alpha10",
+        "symfony/console": "^2.7"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "^2.3",
