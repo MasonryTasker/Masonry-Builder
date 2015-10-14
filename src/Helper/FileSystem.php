@@ -29,7 +29,7 @@ class FileSystem
      */
     public function copy($from, $to)
     {
-        if (is_file($from)) {
+        if ($this->isFile($from)) {
             if (@copy($from, $to)) {
                 return true;
             }
@@ -77,7 +77,7 @@ class FileSystem
      */
     public function delete($fileOrDirectory)
     {
-        if (is_file($fileOrDirectory)) {
+        if ($this->isFile($fileOrDirectory)) {
             return unlink($fileOrDirectory);
         }
         if ($this->isDirectory($fileOrDirectory)) {
@@ -126,5 +126,15 @@ class FileSystem
     public function isDirectory($directory)
     {
         return @is_dir($directory);
+    }
+
+    /**
+     * Wraps is_file
+     * @param $file
+     * @return bool
+     */
+    public function isFile($file)
+    {
+        return @is_file($file);
     }
 }

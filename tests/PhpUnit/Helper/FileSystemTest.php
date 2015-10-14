@@ -28,6 +28,7 @@ class FileSystemTest extends TestCase
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isFile
      * @throws \Exception
      * @return void
      */
@@ -90,6 +91,7 @@ class FileSystemTest extends TestCase
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isFile
      * @throws \Exception
      * @expectedException \Exception
      * @expectedExceptionMessage Could not copy file
@@ -128,6 +130,7 @@ class FileSystemTest extends TestCase
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isFile
      * @throws \Exception
      * @expectedException \Exception
      * @expectedExceptionMessage Could not create directory
@@ -166,6 +169,7 @@ class FileSystemTest extends TestCase
      * @covers ::copy
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::makeDirectory
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isFile
      * @throws \Exception
      * @expectedException \Exception
      * @expectedExceptionMessage does not exist or is not accessible
@@ -195,6 +199,7 @@ class FileSystemTest extends TestCase
      * @test
      * @covers ::delete
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isFile
      * @return void
      */
     public function testDelete()
@@ -354,10 +359,13 @@ class FileSystemTest extends TestCase
         $root = 'root';
         $realDir = 'real-dir';
         $fakeDir = 'fake-dir';
+        $realFile = 'real-file.txt';
 
         $mockFileSystem = vfsStream::setup($root, 0777);
         $mockFileSystem->addChild(vfsStream::create([
-            $realDir => []
+            $realDir => [
+                $realFile => 'file content'
+            ]
         ]));
 
         $fileSystemHelper = new FileSystem();
@@ -367,6 +375,41 @@ class FileSystemTest extends TestCase
         );
         $this->assertFalse(
             $fileSystemHelper->isDirectory(vfsStream::url("$root/$fakeDir"))
+        );
+        $this->assertFalse(
+            $fileSystemHelper->isDirectory(vfsStream::url("$root/$realDir/$realFile"))
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::isFile
+     * @return void
+     */
+    public function testIsFile()
+    {
+        $root = 'root';
+        $realDir = 'real-dir';
+        $fakeDir = 'fake-dir';
+        $realFile = 'real-file.txt';
+
+        $mockFileSystem = vfsStream::setup($root, 0777);
+        $mockFileSystem->addChild(vfsStream::create([
+            $realDir => [
+                $realFile => 'file content'
+            ]
+        ]));
+
+        $fileSystemHelper = new FileSystem();
+
+        $this->assertFalse(
+            $fileSystemHelper->isFile(vfsStream::url("$root/$realDir"))
+        );
+        $this->assertFalse(
+            $fileSystemHelper->isFile(vfsStream::url("$root/$fakeDir/$realFile"))
+        );
+        $this->assertTrue(
+            $fileSystemHelper->isFile(vfsStream::url("$root/$realDir/$realFile"))
         );
     }
 
