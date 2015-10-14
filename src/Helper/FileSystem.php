@@ -104,7 +104,7 @@ class FileSystem
      */
     public function makeDirectory($directory, $mode = 0777, $recursive = true)
     {
-        return mkdir($directory, $mode, $recursive);
+        return @mkdir($directory, $mode, $recursive);
     }
 
     /**
