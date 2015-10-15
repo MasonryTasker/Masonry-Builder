@@ -1,6 +1,13 @@
-- MakeDirectory:
-    name: /tmp/MasonryTest
+- Delete:
+    name: /tmp/Masonry-Builder
 
-- Copy:
-    from: /www/vhosts/Masonry-Builder/example.yml.dist
-    to: /tmp/MasonryTest/example.yml.dist
+- MakeDirectory:
+    name: /tmp/Masonry-Builder
+
+- CloneRepository:
+    repository: git@github.com:Visionmongers/Masonry-Builder.git
+    directory: /tmp/Masonry-Builder
+
+- Composer:
+    command: install
+    location: /tmp/Masonry-Builder
