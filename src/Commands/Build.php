@@ -109,15 +109,16 @@ class Build extends Command
             $pool->addTask(new Task($description));
         }
 
-        while($pool->getStatus() != StatusInterface::STATUS_EMPTY) {
+        $success = true;
+        while($pool->getStatus() != StatusInterface::STATUS_EMPTY && $success) {
             $task = $pool->getTask();
             $this->mediator->process($task)
                 ->then(function($result) use ($output) {
                     $output->writeln("<info>Success</>: $result");
                 })
-                ->otherwise(function($result) use ($output) {
+                ->otherwise(function($result) use ($output, &$success) {
                     $output->writeln("<error>Failure</>: $result");
-                    throw new \RuntimeException('Could not complete the build due to failure');
+                    $success = false;
                 })
                 ->progress(function($result) use ($output) {
                     $output->writeln("<comment>Notice</>: $result");
