@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+/**
+ * masonry.php
+ *
+ * @author    Daniel Mason <daniel.mason@thefoundry.co.uk>
+ * @copyright 2015 The Foundry Visionmongers
+ * @license
+ * @see       https://github.com/Visionmongers/
+ */
+
+$potentialAutoload = [
+    __DIR__.'/../../../../autoload.php',
+    __DIR__.'/../vendor/autoload.php',
+];
+
+$foundAutoload = false;
+foreach($potentialAutoload as $file) {
+    if(is_file($file)) {
+        require_once $file;
+        $foundAutoload = true;
+        break;
+    }
+}
+
+if(!$foundAutoload) {
+    echo "Could not find autoload.php.".PHP_EOL;
+    echo "Masonry-Builder must be installed with Composer see http://getcomposer.org/ for details".PHP_EOL;
+}
+
+use Foundry\Masonry\Builder\Cli\Application;
+
+$application = new Application();
+$application->run();
