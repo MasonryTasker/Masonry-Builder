@@ -139,6 +139,16 @@ class WorkerTest extends GenericWorkerTestCase
         $fileSystem = $this->getMock(FileSystem::class);
         $fileSystem
             ->expects($this->once())
+            ->method('isFile')
+            ->with($testFile)
+            ->will($this->returnValue(false));
+        $fileSystem
+            ->expects($this->once())
+            ->method('isDirectory')
+            ->with($testFile)
+            ->will($this->returnValue(true));
+        $fileSystem
+            ->expects($this->once())
             ->method('delete')
             ->with($testFile)
             ->will($this->returnValue(true));
@@ -212,6 +222,11 @@ class WorkerTest extends GenericWorkerTestCase
         $fileSystem = $this->getMock(FileSystem::class);
         $fileSystem
             ->expects($this->once())
+            ->method('isFile')
+            ->with($testFile)
+            ->will($this->returnValue(true));
+        $fileSystem
+            ->expects($this->once())
             ->method('delete')
             ->with($testFile)
             ->will($this->returnValue(false));
@@ -236,6 +251,82 @@ class WorkerTest extends GenericWorkerTestCase
 
         $this->assertSame(
             "File or directory '{$testFile}' could not be deleted",
+            $failureMessage
+        );
+
+        $this->assertSame(
+            "Deleting file or directory '{$testFile}'",
+            $notifyMessage
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::processDeferred
+     * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
+     * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @return void
+     */
+    public function testProcessDeferredSkip()
+    {
+        // Set up the deferred so we can see whats happening
+        $successMessage = '';
+        $failureMessage = '';
+        $notifyMessage = '';
+
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+        };
+        $notifyClosure  = function ($message) use (&$notifyMessage) {
+            $notifyMessage  = $message;
+        };
+
+        $deferred = new Deferred();
+        $deferred->promise()->then(
+            $successClosure,
+            $failureClosure,
+            $notifyClosure
+        );
+
+        // The rest of test data
+        $testFile = 'schema://root/test';
+
+        /** @var FileSystem|\PHPUnit_Framework_MockObject_MockObject $fileSystem */
+        $fileSystem = $this->getMock(FileSystem::class);
+        $fileSystem
+            ->expects($this->once())
+            ->method('isFile')
+            ->with($testFile)
+            ->will($this->returnValue(false));
+        $fileSystem
+            ->expects($this->once())
+            ->method('isDirectory')
+            ->with($testFile)
+            ->will($this->returnValue(false));
+
+        $description = new Description($testFile);
+        $task = new Task($description);
+        $worker = $this->getTestSubject();
+        $worker->setFileSystem($fileSystem);
+
+        $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
+
+        // The tests
+        $this->assertTrue(
+            $processDeferred($deferred, $task),
+            $successMessage
+        );
+        // Test messages
+        $this->assertSame(
+            "File or directory '{$testFile}' does not exist",
+            $successMessage
+        );
+
+        $this->assertSame(
+            "",
             $failureMessage
         );
 

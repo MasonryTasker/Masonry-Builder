@@ -36,6 +36,14 @@ class Worker extends GenericWorker
 
         $deferred->notify("Deleting file or directory '{$description->getName()}'");
 
+        if (
+            !$this->getFileSystem()->isFile($description->getName())
+            && !$this->getFileSystem()->isDirectory($description->getName())
+        )
+        {
+            $deferred->resolve("File or directory '{$description->getName()}' does not exist");
+            return true;
+        }
         if ($this->getFileSystem()->delete($description->getName())) {
             $deferred->resolve("Deleted file or directory '{$description->getName()}'");
             return true;
