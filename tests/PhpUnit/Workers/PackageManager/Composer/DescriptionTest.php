@@ -52,18 +52,6 @@ class DescriptionTest extends TestCase
      * @test
      * @covers ::__construct
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage There was no composer.json found at
-     * @return void
-     */
-    public function testConstructExceptionLocation()
-    {
-        new Description('does not matter', 'not a location');
-    }
-
-    /**
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $command must be one of:
      * @return void
      */

@@ -45,12 +45,7 @@ class Description extends GenericDescription
      */
     public function __construct($command, $location)
     {
-        $location = preg_replace('/(\\\\|\\/)?composer\.json$/', '', $location);
-        if (!is_file($location.'/composer.json')) {
-            throw new \InvalidArgumentException("There was no composer.json found at '$location'");
-        }
-        $this->location = $location;
-
+        $this->location = preg_replace('/(\\\\|\\/)?composer\.json$/', '', $location);
         if (!in_array($command, $this->acceptableCommands)) {
             throw new \InvalidArgumentException('$command must be one of: '.implode(', ', $this->acceptableCommands));
         }
