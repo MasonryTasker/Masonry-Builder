@@ -1,0 +1,17 @@
+Descriptions:
+  Copy:            Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
+  Delete:          Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
+  MakeDirectory:   Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
+  Move:            Foundry\Masonry\Builder\Workers\FileSystem\Move\Description
+  Composer:        Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
+  Exec:            Foundry\Masonry\Builder\Workers\System\Exec\Description
+  CloneRepository: Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
+
+Workers:
+  - Foundry\Masonry\Builder\Workers\FileSystem\Copy\Worker
+  - Foundry\Masonry\Builder\Workers\FileSystem\Delete\Worker
+  - Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Worker
+  - Foundry\Masonry\Builder\Workers\FileSystem\Move\Worker
+  - Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker
+  - Foundry\Masonry\Builder\Workers\System\Exec\Worker
+  - Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Worker

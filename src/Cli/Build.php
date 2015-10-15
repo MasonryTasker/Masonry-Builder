@@ -9,7 +9,7 @@
  */
 
 
-namespace Foundry\Masonry\Builder\Commands;
+namespace Foundry\Masonry\Builder\Cli;
 
 use Foundry\Masonry\Builder\Helper\ClassRegistry;
 use Foundry\Masonry\Builder\Pools\ArrayQueue;

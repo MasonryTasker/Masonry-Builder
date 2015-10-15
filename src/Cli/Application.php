@@ -11,7 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Cli;
 
-use Foundry\Masonry\Builder\Commands\Build;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -50,27 +49,8 @@ class Application extends SymfonyApplication
         // which is used when using the --help option
         $defaultCommands = parent::getDefaultCommands();
 
-        $classRegistry = new ClassRegistry([
-            'Copy'            => Workers\FileSystem\Copy\Description::class,
-            'Delete'          => Workers\FileSystem\Delete\Description::class,
-            'MakeDirectory'   => Workers\FileSystem\MakeDirectory\Description::class,
-            'Move'            => Workers\FileSystem\Move\Description::class,
-            'Composer'        => Workers\PackageManager\Composer\Description::class,
-            'Exec'            => Workers\System\Exec\Description::class,
-            'CloneRepository' => Workers\VersionControl\Git\CloneRepository\Description::class,
-        ]);
-
-        $mediator = new Mediator();
-        $mediator
-            ->addWorker(new Workers\FileSystem\Copy\Worker())
-            ->addWorker(new Workers\FileSystem\Delete\Worker())
-            ->addWorker(new Workers\FileSystem\MakeDirectory\Worker())
-            ->addWorker(new Workers\FileSystem\Move\Worker())
-            ->addWorker(new Workers\PackageManager\Composer\Worker())
-            ->addWorker(new Workers\System\Exec\Worker())
-            ->addWorker(new Workers\VersionControl\Git\CloneRepository\Worker())
-        ;
-
+        $classRegistry     = new ClassRegistry();
+        $mediator          = new Mediator();
         $defaultCommands[] = new Build($mediator, $classRegistry);
 
         return $defaultCommands;
