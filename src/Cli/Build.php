@@ -12,11 +12,11 @@
 namespace Foundry\Masonry\Builder\Cli;
 
 use Foundry\Masonry\Builder\Helper\ClassRegistry;
-use Foundry\Masonry\Builder\Pools\ArrayQueue;
+use Foundry\Masonry\Builder\Pools\YamlQueue;
+use Foundry\Masonry\Core\Mediator;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\MediatorInterface;
 use Foundry\Masonry\Interfaces\Pool\StatusInterface;
-use Foundry\Masonry\Interfaces\Task\DescriptionInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,6 +43,8 @@ class Build extends Command
      */
     protected $mediator;
 
+    protected $yamlReader;
+
     /**
      * Build constructor.
      * @param MediatorInterface $mediator
@@ -53,6 +55,8 @@ class Build extends Command
     {
         $this->mediator = $mediator;
         $this->classRegistry = $classRegistry;
+        $this->yamlReader = new Yaml();
+
         parent::__construct($name);
     }
 
@@ -90,29 +94,16 @@ class Build extends Command
             throw new \InvalidArgumentException("Configuration file '$configFile' not found");
         }
 
-        $taskReader = new Yaml();
-        $taskArray = $taskReader->parse(file_get_contents($configFile));
+        $taskArray    = $this->yamlReader->parse(file_get_contents($configFile));
+        $descriptions = $this->createDescriptionRegistry();
+        $mediator     = $this->createMediator();
 
-        $pool = new ArrayQueue();
-
-        foreach($taskArray as $task) {
-            $descriptionClassName = key($task);
-            $descriptionParameters = current($task);
-            $className = $this->classRegistry->getClass($descriptionClassName);
-
-            $descriptionReflection = new \ReflectionClass($className);
-            $description = $descriptionReflection->newInstanceArgs($descriptionParameters);
-
-            if(!$description instanceof DescriptionInterface) {
-                throw new \UnexpectedValueException("'$descriptionClassName' is not a Description");
-            }
-            $pool->addTask(new Task($description));
-        }
+        $pool = new YamlQueue($taskArray, $descriptions);
 
         $success = true;
         while($pool->getStatus() != StatusInterface::STATUS_EMPTY && $success) {
             $task = $pool->getTask();
-            $this->mediator->process($task)
+            $mediator->process($task)
                 ->then(function($result) use ($output) {
                     $output->writeln("<info>Success</>: $result");
                 })
@@ -125,6 +116,75 @@ class Build extends Command
                 })
                 ;
         }
+    }
 
+    /**
+     *
+     * @param ClassRegistry|null $descriptions
+     * @return ClassRegistry
+     */
+    protected function createDescriptionRegistry(ClassRegistry $descriptions = null)
+    {
+        if(!$descriptions) {
+            $descriptions = new ClassRegistry();
+        }
+        $config = $this->getConfiguration();
+        if(!array_key_exists('Descriptions', $config)) {
+            throw new \RuntimeException('No descriptions have been configured');
+        }
+        $descriptions->addClassNames($config['Descriptions']);
+
+        return $descriptions;
+    }
+
+    /**
+     *
+     * @param Mediator|null $mediator
+     * @return Mediator
+     */
+    protected function createMediator(Mediator $mediator = null)
+    {
+        if(!$mediator) {
+            $mediator = new Mediator();
+        }
+        $config = $this->getConfiguration();
+        if(!array_key_exists('Workers', $config)) {
+            throw new \RuntimeException('No workers have been configured');
+        }
+        foreach($config['Workers'] as $worker) {
+            $mediator->addWorker(new $worker);
+        }
+
+        return $mediator;
+    }
+
+    /**
+     * @param string|null $customConfigFile
+     * @return array
+     */
+    protected function getConfiguration($customConfigFile = null)
+    {
+        static $configuration = [];
+        if(!$configuration) {
+            $default = $this->getYaml(__DIR__.'/../../configuration/default.yml');
+            $customConfig = [];
+            if($customConfigFile) {
+                $customConfig = $this->getYaml($customConfigFile);
+            }
+            $configuration = array_merge($default, $customConfig);
+        }
+        return $configuration;
+    }
+
+    /**
+     * @param $filename
+     * @return array
+     */
+    protected function getYaml($filename)
+    {
+        if(!$filename) {
+            throw new \RuntimeException("File '$filename' not found");
+        }
+        return $this->yamlReader->parse(file_get_contents($filename));
     }
 }
