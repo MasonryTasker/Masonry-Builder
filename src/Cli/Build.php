@@ -116,6 +116,8 @@ class Build extends Command
                 })
                 ;
         }
+
+        return $success ? 0 : 1;
     }
 
     /**
