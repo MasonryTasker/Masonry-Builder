@@ -103,8 +103,10 @@ class Build extends Command
         $success = true;
         while($pool->getStatus() != StatusInterface::STATUS_EMPTY && $success) {
             $task = $pool->getTask();
+
+            $taskComplete = false;
             $mediator->process($task)
-                ->then(function($result) use ($output) {
+                ->then(function($result) use ($output, &$taskComplete) {
                     $output->writeln("<info>Success</>: $result");
                 })
                 ->otherwise(function($result) use ($output, &$success) {
@@ -114,7 +116,13 @@ class Build extends Command
                 ->progress(function($result) use ($output) {
                     $output->writeln("<comment>Notice</>: $result");
                 })
+                ->done(function() use ($output, &$taskComplete) {
+                    $taskComplete = true;
+                })
                 ;
+            while(!$taskComplete) {
+                // Hold here
+            }
         }
 
         return $success ? 0 : 1;
