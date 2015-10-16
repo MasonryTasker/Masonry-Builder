@@ -19,6 +19,7 @@ use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
 use Composer\Console\Application as Composer;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 class Worker extends GenericWorker
 {
@@ -54,9 +55,10 @@ class Worker extends GenericWorker
                 '-d' => $description->getLocation(),
                 ]
             );
+
             // Thought: It would be cool to add a stream into $deferred->notify from ->run but
             //          since run is unlikely to work asynchronously it is probably pointless
-            $this->getComposer()->run($input);
+            $this->getComposer()->run($input, new NullOutput());
 
         } catch (\Exception $e) {
             $deferred->reject("Composer '{$description->getCommand()}' failed");
