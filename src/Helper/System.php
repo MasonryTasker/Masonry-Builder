@@ -47,16 +47,15 @@ class System
             }
 
             // This will prevent to program from continuing until the processes is complete
-            // Note: status code is created by this
             $status = proc_get_status($process);
             while($status['running']) {
                 $status = proc_get_status($process);
             }
 
-            proc_close($process);
-
             $stdOutput = stream_get_contents($pipes[1]);
             $stdError  = stream_get_contents($pipes[2]);
+
+            proc_close($process);
 
             return $status['exitcode'];
         }
