@@ -77,8 +77,12 @@ class FileSystem
      */
     public function delete($fileOrDirectory)
     {
-        if ($this->isFile($fileOrDirectory)) {
-            return unlink($fileOrDirectory);
+        if ($this->isSymlink($fileOrDirectory) || $this->isFile($fileOrDirectory)) {
+            if(@unlink($fileOrDirectory)) {
+                return true;
+            }
+            @chmod($fileOrDirectory, 0666);
+            return @unlink($fileOrDirectory);
         }
         if ($this->isDirectory($fileOrDirectory)) {
             $directory = opendir($fileOrDirectory);
@@ -136,5 +140,15 @@ class FileSystem
     public function isFile($file)
     {
         return @is_file($file);
+    }
+
+    /**
+     * Wraps is_link
+     * @param $file
+     * @return bool
+     */
+    public function isSymlink($file)
+    {
+        return @is_link($file);
     }
 }
