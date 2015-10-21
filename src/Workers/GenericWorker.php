@@ -13,6 +13,7 @@
 
 namespace Foundry\Masonry\Builder\Workers;
 
+use Foundry\Masonry\Builder\Coroutine\Factory as CoroutineFactory;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use Foundry\Masonry\Interfaces\WorkerInterface;
 use React\Promise\Deferred;
@@ -30,7 +31,7 @@ abstract class GenericWorker implements WorkerInterface
      * Where the actual work is done
      * @param Deferred $deferred
      * @param TaskInterface $task
-     * @return mixed
+     * @return \Generator
      */
     abstract protected function processDeferred(Deferred $deferred, TaskInterface $task);
 
@@ -49,7 +50,7 @@ abstract class GenericWorker implements WorkerInterface
             return $deferred->promise();
         }
 
-        $this->processDeferred($deferred, $task);
+        CoroutineFactory::getCoroutineRegister()->register($this->processDeferred($deferred, $task));
 
         return $deferred->promise();
     }

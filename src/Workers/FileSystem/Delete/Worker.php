@@ -31,6 +31,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -42,15 +44,15 @@ class Worker extends GenericWorker
         )
         {
             $deferred->resolve("File or directory '{$description->getName()}' does not exist");
-            return true;
+            return;
         }
         if ($this->getFileSystem()->delete($description->getName())) {
             $deferred->resolve("Deleted file or directory '{$description->getName()}'");
-            return true;
+            return;
         }
 
         $deferred->reject("File or directory '{$description->getName()}' could not be deleted");
-        return false;
+        return;
     }
 
     /**

@@ -34,6 +34,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -42,13 +44,13 @@ class Worker extends GenericWorker
         try {
             if ($this->getGit()->cloneRepository($description->getRepository(), $description->getDirectory())) {
                 $deferred->resolve("Cloned '{$description->getRepository()}' to '{$description->getDirectory()}'");
-                return true;
+                return;
             }
         } catch (\Exception $e) {
             // Do nothing
         }
         $deferred->reject("Could not clone '{$description->getRepository()}' to '{$description->getDirectory()}'");
-        return false;
+        return;
     }
 
     /**

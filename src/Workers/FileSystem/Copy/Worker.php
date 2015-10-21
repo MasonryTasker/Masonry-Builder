@@ -31,6 +31,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -42,11 +44,11 @@ class Worker extends GenericWorker
             }
         } catch (\Exception $e) {
             $deferred->reject("Could not copy '{$description->getFrom()}' to '{$description->getTo()}'");
-            return false;
+            return;
         }
 
         $deferred->resolve("Copied '{$description->getFrom()}' to '{$description->getTo()}'");
-        return true;
+        return;
     }
 
     /**

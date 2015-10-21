@@ -11,6 +11,7 @@
 
 namespace Foundry\Masonry\Builder\Cli;
 
+use Foundry\Masonry\Builder\Coroutine\Factory as CoroutineFactory;
 use Foundry\Masonry\Builder\Helper\ClassRegistry;
 use Foundry\Masonry\Builder\Pools\YamlQueue;
 use Foundry\Masonry\Core\Mediator;
@@ -121,7 +122,7 @@ class Build extends Command
                 })
                 ;
             while(!$taskComplete) {
-                // Hold here
+                CoroutineFactory::getCoroutineRegister()->tick();
             }
         }
 
