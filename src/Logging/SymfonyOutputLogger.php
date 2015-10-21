@@ -51,13 +51,13 @@ class SymfonyOutputLogger extends AbstractSimpleLogger
     {
         switch ($level) {
             case LogLevel::NOTICE:
-                return "<fg=yellow>".$textToColor."</>";
+                return "<fg=yellow>$textToColor</>";
                 break;
             case LogLevel::INFO:
-                return "<fg=green>".$textToColor."</>";
+                return "<fg=green>$textToColor</>";
                 break;
             case LogLevel::DEBUG:
-                return "<fg=cyan>".$textToColor."</>";
+                return "<fg=cyan>$textToColor</>";
                 break;
             case LogLevel::EMERGENCY:
             case LogLevel::ALERT:
