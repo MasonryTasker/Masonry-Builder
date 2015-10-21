@@ -13,7 +13,7 @@ namespace Foundry\Masonry\Builder\Helper;
 
 /**
  * Class System
- * ${CARET}
+ * System level actions
  * @package Masonry-Builder
  * @see     https://github.com/Visionmongers/
  */

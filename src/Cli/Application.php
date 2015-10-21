@@ -21,7 +21,7 @@ use Foundry\Masonry\Core\Mediator;
 
 /**
  * Class Application
- * ${CARET}
+ * Manages commands for Symfony Console
  * @package Masonry-Builder
  * @see     https://github.com/Visionmongers/
  */
@@ -49,9 +49,7 @@ class Application extends SymfonyApplication
         // which is used when using the --help option
         $defaultCommands = parent::getDefaultCommands();
 
-        $classRegistry     = new ClassRegistry();
-        $mediator          = new Mediator();
-        $defaultCommands[] = new Build($mediator, $classRegistry);
+        $defaultCommands[] = new Build();
 
         return $defaultCommands;
     }
