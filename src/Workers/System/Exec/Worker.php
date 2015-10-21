@@ -36,6 +36,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -44,13 +46,13 @@ class Worker extends GenericWorker
         try {
             if (0 === $this->getSystem()->exec($description->getCommandString())) {
                 $deferred->resolve("Executed '{$description}'");
-                return true;
+                return;
             }
         } catch (\Exception $e) {
             // Do nothing
         }
         $deferred->reject("Failed to execute '{$description}'");
-        return false;
+        return;
     }
 
     /**

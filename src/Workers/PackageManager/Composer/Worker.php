@@ -39,7 +39,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
-        
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -62,13 +63,13 @@ class Worker extends GenericWorker
 
         } catch (\Exception $e) {
             $deferred->reject("Composer '{$description->getCommand()}' failed");
-            return false;
+            return;
 
         }
 
         $deferred->resolve("Composer '{$description->getCommand()}' ran successfully");
 
-        return true;
+        return;
     }
 
     /**
