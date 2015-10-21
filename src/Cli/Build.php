@@ -15,6 +15,7 @@ use Foundry\Masonry\Builder\Coroutine\Factory as CoroutineFactory;
 use Foundry\Masonry\Builder\Helper\ClassRegistry;
 use Foundry\Masonry\Builder\Logging\EchoLogger;
 use Foundry\Masonry\Builder\Logging\MultiLogger;
+use Foundry\Masonry\Builder\Logging\SymfonyOutputLogger;
 use Foundry\Masonry\Builder\Pools\YamlQueue;
 use Foundry\Masonry\Builder\Processor\BlockingProcessor;
 use Foundry\Masonry\Core\Mediator;
@@ -91,7 +92,9 @@ class Build extends Command
         $pool = new YamlQueue($taskArray, $descriptions);
 
         $multiLogger = new MultiLogger();
-        $multiLogger->addLogger(new EchoLogger());
+        $multiLogger->addLogger(
+            new SymfonyOutputLogger($output)
+        );
 
         $processor = new BlockingProcessor();
         $processor

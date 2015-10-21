@@ -40,7 +40,8 @@ abstract class AbstractSimpleLogger extends AbstractLogger
     {
         $translatedLevel = $this->translateLevel($level);
         $decoratedLevel  = $this->decorateLevel($translatedLevel);
-        return $decoratedLevel;
+        $coloredLevel    = $this->colorForLevel($level, $decoratedLevel);
+        return $coloredLevel;
     }
 
     /**
@@ -78,26 +79,15 @@ abstract class AbstractSimpleLogger extends AbstractLogger
     }
 
     /**
-     * Apply a colour to the level
+     * Apply a colour based on the level
      * This function does not change color by default but should be
      * @param $level
+     * @param $textToColor
      * @return string
      */
-    protected function colorLevel($level)
+    protected function colorForLevel($level, $textToColor)
     {
-        switch ($level) {
-            case LogLevel::NOTICE:
-            case LogLevel::INFO:
-            case LogLevel::DEBUG:
-            case LogLevel::EMERGENCY:
-            case LogLevel::ALERT:
-            case LogLevel::CRITICAL:
-            case LogLevel::ERROR:
-            case LogLevel::WARNING:
-            default:
-                return strtoupper($level);
-                break;
-        }
+        return $textToColor;
     }
 
     /**
