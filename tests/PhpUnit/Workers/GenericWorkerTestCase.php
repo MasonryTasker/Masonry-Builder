@@ -34,6 +34,8 @@ abstract class GenericWorkerTestCase extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $generator = function() { yield; };
+
         /** @var GenericWorker|\PHPUnit_Framework_MockObject_MockObject $worker */
         $worker = $this
             ->getMockBuilder(GenericWorker::class)
@@ -50,7 +52,8 @@ abstract class GenericWorkerTestCase extends TestCase
             ->will($this->onConsecutiveCalls(true, false));
         $worker
             ->expects($this->once())
-            ->method('processDeferred');
+            ->method('processDeferred')
+            ->will($this->returnValue($generator()));
 
         // This should not succeed, but not fail either
         $promise = $worker->process($task);
@@ -64,11 +67,10 @@ abstract class GenericWorkerTestCase extends TestCase
 
         $successCallback = function () use (&$isSuccess) {
             $isSuccess = true;
-
         };
+
         $failureCallback = function () use (&$isFailure) {
             $isFailure = true;
-
         };
 
         $promise->then(

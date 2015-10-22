@@ -152,12 +152,11 @@ class WorkerTest extends GenericWorkerTestCase
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-
-        $this->assertTrue(
-            $processDeferred($deferred, $task),
-            $failureMessage
-        );
-
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         // Test messages
         $this->assertSame(
@@ -230,12 +229,11 @@ class WorkerTest extends GenericWorkerTestCase
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-
-        $this->assertFalse(
-            $processDeferred($deferred, $task),
-            $successMessage
-        );
-
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         // Test messages
         $this->assertSame(
@@ -305,10 +303,11 @@ class WorkerTest extends GenericWorkerTestCase
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-        $this->assertTrue(
-            $processDeferred($deferred, $task),
-            $failureMessage
-        );
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         // Test messages
         $this->assertSame(
