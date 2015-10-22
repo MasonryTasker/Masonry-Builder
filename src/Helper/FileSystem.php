@@ -78,10 +78,6 @@ class FileSystem
     public function delete($fileOrDirectory)
     {
         if ($this->isSymlink($fileOrDirectory) || $this->isFile($fileOrDirectory)) {
-            if(@unlink($fileOrDirectory)) {
-                return true;
-            }
-            @chmod($fileOrDirectory, 0666);
             return @unlink($fileOrDirectory);
         }
         if ($this->isDirectory($fileOrDirectory)) {
