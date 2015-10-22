@@ -55,6 +55,10 @@ class System
             $stdOutput = stream_get_contents($pipes[1]);
             $stdError  = stream_get_contents($pipes[2]);
 
+            foreach($pipes as $pipe) {
+                fclose($pipe);
+            }
+
             proc_close($process);
 
             return $status['exitcode'];
