@@ -200,6 +200,7 @@ class FileSystemTest extends TestCase
      * @covers ::delete
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isDirectory
      * @uses Foundry\Masonry\Builder\Helper\FileSystem::isFile
+     * @uses Foundry\Masonry\Builder\Helper\FileSystem::isSymlink
      * @return void
      */
     public function testDelete()
