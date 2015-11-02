@@ -5,7 +5,7 @@ Use Masonry to build/deploy.
 
 This simple yaml file would build Masonry Builder to a temporary directory
 
-```
+```yaml
 - Delete:
     name: /tmp/Masonry-Builder
 
