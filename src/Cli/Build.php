@@ -163,7 +163,7 @@ class Build extends Command
     {
         static $configuration = [];
         if(!$configuration) {
-            $default = $this->getYaml(__DIR__.'/../../configuration/default.yml');
+            $default = $this->getYaml('configuration/default.yml');
             $customConfig = [];
             if($customConfigFile) {
                 $customConfig = $this->getYaml($customConfigFile);
