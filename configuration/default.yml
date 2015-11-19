@@ -6,6 +6,7 @@ Descriptions:
   Composer:        Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
   Exec:            Foundry\Masonry\Builder\Workers\System\Exec\Description
   CloneRepository: Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
+  Phar:            Foundry\Masonry\Builder\Workers\Php\Phar\Description
 
 Workers:
   - Foundry\Masonry\Builder\Workers\FileSystem\Copy\Worker
@@ -15,3 +16,4 @@ Workers:
   - Foundry\Masonry\Builder\Workers\PackageManager\Composer\Worker
   - Foundry\Masonry\Builder\Workers\System\Exec\Worker
   - Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Worker
+  - Foundry\Masonry\Builder\Workers\Php\Phar\Worker
