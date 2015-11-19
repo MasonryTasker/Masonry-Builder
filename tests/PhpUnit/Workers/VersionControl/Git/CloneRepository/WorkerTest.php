@@ -214,6 +214,79 @@ class WorkerTest extends GenericWorkerTestCase
         $git->expects($this->once())
             ->method('cloneRepository')
             ->with($testFrom, $testTo)
+            ->will($this->returnValue(false));
+
+        $description = new Description($testFrom, $testTo);
+
+        $task = new Task($description);
+        $worker = $this->getTestSubject();
+        $worker->setGit($git);
+
+        $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
+
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
+
+        // Test messages
+        $this->assertSame(
+            "",
+            $successMessage
+        );
+
+        $this->assertSame(
+            "Could not clone '{$testFrom}' to '{$testTo}'",
+            $failureMessage
+        );
+
+        $this->assertSame(
+            "Cloning '{$testFrom}' to '{$testTo}'",
+            $notifyMessage
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::processDeferred
+     * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
+     * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @return void
+     */
+    public function testProcessDeferredFailureException()
+    {
+        // Set up the deferred so we can see whats happening
+        $successMessage = '';
+        $failureMessage = '';
+        $notifyMessage = '';
+
+        $successClosure = function ($message) use (&$successMessage) {
+            $successMessage = $message;
+        };
+        $failureClosure = function ($message) use (&$failureMessage) {
+            $failureMessage = $message;
+        };
+        $notifyClosure = function ($message) use (&$notifyMessage) {
+            $notifyMessage = $message;
+        };
+
+        $deferred = new Deferred();
+        $deferred->promise()->then(
+            $successClosure,
+            $failureClosure,
+            $notifyClosure
+        );
+
+        // The rest of test data
+        $testFrom = 'schema://root/test.git';
+        $testTo = 'schema://root/workingCopy';
+
+        /** @var Git|\PHPUnit_Framework_MockObject_MockObject $git */
+        $git = $this->getMock(Git::class);
+        $git->expects($this->once())
+            ->method('cloneRepository')
+            ->with($testFrom, $testTo)
             ->will($this->throwException(new \Exception()));
 
         $description = new Description($testFrom, $testTo);

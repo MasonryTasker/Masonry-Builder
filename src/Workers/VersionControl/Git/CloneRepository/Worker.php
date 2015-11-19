@@ -47,10 +47,9 @@ class Worker extends GenericWorker
                 return;
             }
         } catch (\Exception $e) {
-            // Do nothing
+            // noop
         }
         $deferred->reject("Could not clone '{$description->getRepository()}' to '{$description->getDirectory()}'");
-        return;
     }
 
     /**
