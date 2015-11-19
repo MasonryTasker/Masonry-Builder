@@ -71,6 +71,16 @@ class Build extends Command
     }
 
     /**
+     * Get the current working directory with a trailing slash
+     *
+     * @return string Current working directory with a trailing slash
+     */
+    protected function getCwd()
+    {
+        return getcwd() . DIRECTORY_SEPARATOR;
+    }
+
+    /**
      * Executes the current command.
      *
      * @param InputInterface  $input  An InputInterface instance
@@ -82,11 +92,12 @@ class Build extends Command
     {
         $scriptFile = $input->getOption('script');
 
-        if(!is_file($scriptFile)) {
+        $scriptFilePath = $this->getCwd() . $scriptFile;
+        if(!is_file($scriptFilePath)) {
             throw new \InvalidArgumentException("Script file '$scriptFile' not found");
         }
 
-        $taskArray    = $this->getYaml($scriptFile);
+        $taskArray    = $this->getYaml($scriptFilePath);
         $descriptions = $this->createDescriptionRegistry();
 
         $pool = new YamlQueue($taskArray, $descriptions);
