@@ -24,17 +24,17 @@ class Factory implements FactoryInterface
     /**
      * @var CoroutineRegister
      */
-    protected static $coroutineFactory;
+    protected static $coroutineRegister;
 
     /**
      * @inheritDoc
      */
     public static function getCoroutineRegister()
     {
-        if(!static::$coroutineFactory) {
-            static::$coroutineFactory = new CoroutineRegister();
+        if(!static::$coroutineRegister) {
+            static::$coroutineRegister = new CoroutineRegister();
         }
-        return static::$coroutineFactory;
+        return static::$coroutineRegister;
     }
 
 }
