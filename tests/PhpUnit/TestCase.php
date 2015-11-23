@@ -56,4 +56,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         return $this;
     }
+
+    /**
+     * This method is a blunt tool, will break additional quotes
+     * @param string $commandString
+     * @return string
+     */
+    protected function fixShellArgumentQuotes($commandString)
+    {
+        return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            ? str_replace("'", '"', $commandString)  // Windows uses " to escape arguments
+            : str_replace('"', "'", $commandString); // Linux uses ' to escape arguments
+    }
 }
