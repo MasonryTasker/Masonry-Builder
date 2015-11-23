@@ -73,7 +73,7 @@ abstract class AbstractSimpleLogger extends AbstractLogger
      * @param $level
      * @return string
      */
-    public function decorateLevel($level)
+    protected function decorateLevel($level)
     {
         return str_pad($level, static::MIN_SIZE, ' ') . " :  ";
     }
@@ -95,7 +95,7 @@ abstract class AbstractSimpleLogger extends AbstractLogger
      * @param $message
      * @return string
      */
-    public function formatMessage($message)
+    protected function formatMessage($message)
     {
         return $this->decorateMessage($message);
     }
@@ -105,7 +105,7 @@ abstract class AbstractSimpleLogger extends AbstractLogger
      * @param $message
      * @return string
      */
-    public function decorateMessage($message)
+    protected function decorateMessage($message)
     {
         return $message;
     }
