@@ -62,8 +62,8 @@ class YamlQueue extends ArrayQueue
 
         if(!class_exists($className)) {
             if(is_array($parameters)) {
-                foreach($parameters as $name => $parameters) {
-                    $this->addPotentialTask($name, $parameters);
+                foreach($parameters as $name => $potentialParameters) {
+                    $this->addPotentialTask($name, $potentialParameters);
                 }
                 return $this;
             }
