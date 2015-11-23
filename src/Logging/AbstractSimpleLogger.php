@@ -80,7 +80,7 @@ abstract class AbstractSimpleLogger extends AbstractLogger
 
     /**
      * Apply a colour based on the level
-     * This function does not change color by default but should be
+     * This function does not change color by default but should be extended
      * @param $level
      * @param $textToColor
      * @return string
