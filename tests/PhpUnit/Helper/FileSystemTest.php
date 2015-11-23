@@ -414,5 +414,38 @@ class FileSystemTest extends TestCase
         );
     }
 
+//    /**
+//     * @test
+//     * @covers ::isSymlink
+//     * @return void
+//     */
+//    public function testIsSymlink()
+//    {
+//        // vfs does not support symlinks so we can't really test this
+//        $root = 'root';
+//        $dir = 'real-dir';
+//        $file = 'real-file.txt';
+//        $symlink  = 'symlink';
+//
+//        $mockFileSystem = vfsStream::setup($root, 0777);
+//        $mockFileSystem->addChild(vfsStream::create([
+//            $dir => [
+//                $file => 'file content'
+//            ]
+//        ]));
+//
+//        $fileSystemHelper = new FileSystem();
+//
+//        $this->assertFalse(
+//            $fileSystemHelper->isSymlink(vfsStream::url("$root/$dir"))
+//        );
+//        $this->assertFalse(
+//            $fileSystemHelper->isSymlink(vfsStream::url("$root/$dir/$file"))
+//        );
+//        $this->assertTrue(
+//            $fileSystemHelper->isSymlink(vfsStream::url("$root/$dir/$symlink"))
+//        );
+//    }
+
 
 }
