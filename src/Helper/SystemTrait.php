@@ -13,7 +13,7 @@ namespace Foundry\Masonry\Builder\Helper;
 
 /**
  * Trait SystemTrait
- * ${CARET}
+ * Attach the System helper to another class
  * @package Masonry-Builder
  * @see     https://github.com/Visionmongers/
  */

@@ -139,7 +139,7 @@ class DescriptionTest extends TestCase
         // With arguments
         $description = new Description("$command $argument1 $argument2");
         $this->assertSame(
-            $command.' "'.$argument1.'" "'.$argument2.'"',
+            $this->fixShellArgumentQuotes($command.' "'.$argument1.'" "'.$argument2.'"'),
             $description->getCommandString()
         );
     }
@@ -169,7 +169,7 @@ class DescriptionTest extends TestCase
         // With arguments
         $description = new Description("$command $argument1 $argument2");
         $this->assertSame(
-            $command.' "'.$argument1.'" "'.$argument2.'"',
+            $this->fixShellArgumentQuotes($command.' "'.$argument1.'" "'.$argument2.'"'),
             (string)$description
         );
     }

@@ -31,6 +31,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -38,15 +40,14 @@ class Worker extends GenericWorker
 
         if($this->getFileSystem()->isDirectory($description->getName())) {
             $deferred->resolve("Directory '{$description->getName()}' already exists");
-            return true;
+            return;
         }
         if ($this->getFileSystem()->makeDirectory($description->getName())) {
             $deferred->resolve("Created directory '{$description->getName()}'");
-            return true;
+            return;
         }
 
         $deferred->reject("Directory '{$description->getName()}' could not be created");
-        return false;
     }
 
     /**

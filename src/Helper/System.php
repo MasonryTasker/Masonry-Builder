@@ -13,7 +13,7 @@ namespace Foundry\Masonry\Builder\Helper;
 
 /**
  * Class System
- * ${CARET}
+ * System level actions
  * @package Masonry-Builder
  * @see     https://github.com/Visionmongers/
  */
@@ -54,6 +54,10 @@ class System
 
             $stdOutput = stream_get_contents($pipes[1]);
             $stdError  = stream_get_contents($pipes[2]);
+
+            foreach($pipes as $pipe) {
+                fclose($pipe);
+            }
 
             proc_close($process);
 

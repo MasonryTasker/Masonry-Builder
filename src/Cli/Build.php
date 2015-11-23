@@ -11,8 +11,13 @@
 
 namespace Foundry\Masonry\Builder\Cli;
 
+use Foundry\Masonry\Builder\Coroutine\Factory as CoroutineFactory;
 use Foundry\Masonry\Builder\Helper\ClassRegistry;
+use Foundry\Masonry\Builder\Logging\EchoLogger;
+use Foundry\Masonry\Builder\Logging\MultiLogger;
+use Foundry\Masonry\Builder\Logging\SymfonyOutputLogger;
 use Foundry\Masonry\Builder\Pools\YamlQueue;
+use Foundry\Masonry\Builder\Processor\BlockingProcessor;
 use Foundry\Masonry\Core\Mediator;
 use Foundry\Masonry\Core\Task;
 use Foundry\Masonry\Interfaces\MediatorInterface;
@@ -26,7 +31,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class Build
- * ${CARET}
+ * Command for CLI
  * @package Masonry-Builder
  * @see     https://github.com/Visionmongers/
  */
@@ -34,29 +39,16 @@ class Build extends Command
 {
 
     /**
-     * @var ClassRegistry
+     * @var Yaml
      */
-    protected $classRegistry;
-
-    /**
-     * @var MediatorInterface
-     */
-    protected $mediator;
-
     protected $yamlReader;
 
     /**
      * Build constructor.
-     * @param MediatorInterface $mediator
-     * @param ClassRegistry     $classRegistry
      * @param null $name
      */
-    public function __construct(MediatorInterface $mediator, ClassRegistry $classRegistry, $name = null)
+    public function __construct($name = null)
     {
-        $this->mediator = $mediator;
-        $this->classRegistry = $classRegistry;
-        $this->yamlReader = new Yaml();
-
         parent::__construct($name);
     }
 
@@ -70,12 +62,22 @@ class Build extends Command
             ->setName('build')
             ->setDescription('Run the build process.')
             ->addOption(
-                'configuration',
-                'c',
+                'script',
+                's',
                 InputArgument::OPTIONAL,
-                'The name of the configuration file',
+                'The name of the build script file',
                 'build.yml'
             );
+    }
+
+    /**
+     * Get the current working directory with a trailing slash
+     *
+     * @return string Current working directory with a trailing slash
+     */
+    protected function getCwd()
+    {
+        return getcwd() . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -88,44 +90,29 @@ class Build extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $configFile = $input->getOption('configuration');
+        $scriptFile = $input->getOption('script');
 
-        if(!is_file($configFile)) {
-            throw new \InvalidArgumentException("Configuration file '$configFile' not found");
+        $scriptFilePath = $this->getCwd() . $scriptFile;
+        if(!is_file($scriptFilePath)) {
+            throw new \InvalidArgumentException("Script file '$scriptFile' not found");
         }
 
-        $taskArray    = $this->yamlReader->parse(file_get_contents($configFile));
+        $taskArray    = $this->getYaml($scriptFilePath);
         $descriptions = $this->createDescriptionRegistry();
-        $mediator     = $this->createMediator();
 
         $pool = new YamlQueue($taskArray, $descriptions);
 
-        $success = true;
-        while($pool->getStatus() != StatusInterface::STATUS_EMPTY && $success) {
-            $task = $pool->getTask();
+        $multiLogger = new MultiLogger();
+        $multiLogger->addLogger(
+            new SymfonyOutputLogger($output)
+        );
 
-            $taskComplete = false;
-            $mediator->process($task)
-                ->then(function($result) use ($output, &$taskComplete) {
-                    $output->writeln("<info>Success</>: $result");
-                })
-                ->otherwise(function($result) use ($output, &$success) {
-                    $output->writeln("<error>Failure</>: $result");
-                    $success = false;
-                })
-                ->progress(function($result) use ($output) {
-                    $output->writeln("<comment>Notice</>: $result");
-                })
-                ->done(function() use ($output, &$taskComplete) {
-                    $taskComplete = true;
-                })
-                ;
-            while(!$taskComplete) {
-                // Hold here
-            }
-        }
+        $processor = new BlockingProcessor();
+        $processor
+            ->setLogger($multiLogger)
+            ->setMediator($this->createMediator());
 
-        return $success ? 0 : 1;
+        return $processor->run($pool) ? 0 : 1;
     }
 
     /**
@@ -176,7 +163,7 @@ class Build extends Command
     {
         static $configuration = [];
         if(!$configuration) {
-            $default = $this->getYaml(__DIR__.'/../../configuration/default.yml');
+            $default = $this->getYaml('configuration/default.yml');
             $customConfig = [];
             if($customConfigFile) {
                 $customConfig = $this->getYaml($customConfigFile);
@@ -195,6 +182,6 @@ class Build extends Command
         if(!$filename) {
             throw new \RuntimeException("File '$filename' not found");
         }
-        return $this->yamlReader->parse(file_get_contents($filename));
+        return Yaml::parse(file_get_contents($filename));
     }
 }

@@ -30,6 +30,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -37,11 +39,10 @@ class Worker extends GenericWorker
 
         if ($this->getFileSystem()->move($description->getFrom(), $description->getTo())) {
             $deferred->resolve("Moved '{$description->getFrom()}' to '{$description->getTo()}'");
-            return true;
+            return;
         }
 
         $deferred->reject("Could not move '{$description->getFrom()}' to '{$description->getTo()}'");
-        return false;
     }
 
     /**

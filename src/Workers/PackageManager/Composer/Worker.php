@@ -39,7 +39,8 @@ class Worker extends GenericWorker
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
-        
+        yield;
+
         /** @var Description $description */
         $description = $task->getDescription();
 
@@ -59,16 +60,12 @@ class Worker extends GenericWorker
             // Thought: It would be cool to add a stream into $deferred->notify from ->run but
             //          since run is unlikely to work asynchronously it is probably pointless
             $this->getComposer()->run($input, new NullOutput());
-
         } catch (\Exception $e) {
             $deferred->reject("Composer '{$description->getCommand()}' failed");
-            return false;
-
+            return;
         }
 
         $deferred->resolve("Composer '{$description->getCommand()}' ran successfully");
-
-        return true;
     }
 
     /**

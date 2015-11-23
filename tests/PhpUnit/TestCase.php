@@ -35,4 +35,37 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             return $reflectionMethod->invokeArgs($object, func_get_args());
         };
     }
+
+    /**
+     * Set the value of an attribute on an object
+     * Note: $object and $value are passed by reference
+     * @param object $object    The object on which the attribute exists
+     * @param string $attribute The attribute to change
+     * @param mixed  $value     The value to set the attribute to
+     * @return $this
+     */
+    public function setObjectAttribute(&$object, $attribute, &$value)
+    {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('Can not set attribute of non object');
+        }
+
+        $reflectionProperty = new \ReflectionProperty($object, $attribute);
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($object, $value);
+
+        return $this;
+    }
+
+    /**
+     * This method is a blunt tool, will break additional quotes
+     * @param string $commandString
+     * @return string
+     */
+    protected function fixShellArgumentQuotes($commandString)
+    {
+        return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            ? str_replace("'", '"', $commandString)  // Windows uses " to escape arguments
+            : str_replace('"', "'", $commandString); // Linux uses ' to escape arguments
+    }
 }

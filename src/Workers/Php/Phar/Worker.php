@@ -1,38 +1,29 @@
 <?php
 /**
- * Worke.php
+ * Worker.php
+ * PHP version 5.4
+ * 2015-10-05
  *
+ * @package   Foundry\Masonry-Website-Builder
+ * @category
  * @author    Daniel Mason <daniel.mason@thefoundry.co.uk>
  * @copyright 2015 The Foundry Visionmongers
- * @license
- * @see       https://github.com/Visionmongers/
  */
 
 
-namespace Foundry\Masonry\Builder\Workers\System\Exec;
+namespace Foundry\Masonry\Builder\Workers\Php\Phar;
 
-use Foundry\Masonry\Builder\Helper\SystemTrait;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
 
-
-/**
- * Class Worker
- *
- * @package Masonry-Builder
- * @see     https://github.com/Visionmongers/
- */
 class Worker extends GenericWorker
 {
-
-    use SystemTrait;
-
     /**
-     * Where the actual work is done
+     * Run phar
      * @param Deferred $deferred
      * @param TaskInterface $task
-     * @return mixed
+     * @return void
      */
     protected function processDeferred(Deferred $deferred, TaskInterface $task)
     {
@@ -41,17 +32,29 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Executing '{$description}'");
+        $deferred->notify("Preparing to create phar archive '{$description->getFileName()}'");
 
         try {
-            if (0 === $this->getSystem()->exec($description->getCommandString())) {
-                $deferred->resolve("Executed '{$description}'");
-                return;
-            }
+            $phar = new \Phar($description->getFileName());
+
+            $phar->buildFromDirectory($description->getDirectory());
+
+            $stub = $phar->createDefaultStub($description->getEntryPoint());
+            $stub = "#!/usr/bin/php \n".$stub;
+
+            $phar->setStub($stub);
+            $phar->stopBuffering();
+
+            chmod($description->getFileName(), 0755);
         } catch (\Exception $e) {
-            // Do nothing
+            $deferred->notify($e);
+            $deferred->reject("Phar archive '{$description->getFileName()}' was not created");
+            return;
         }
-        $deferred->reject("Failed to execute '{$description}'");
+
+        $deferred->resolve("Phar archive '{$description->getFileName()}' was created successfully");
+
+        return;
     }
 
     /**

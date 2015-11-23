@@ -11,3 +11,8 @@
 - Composer:
     command: install
     location: /tmp/Masonry-Builder
+
+- Phar:
+    fileName: /tmp/masonry-builder.phar
+    directory: .
+    entryPoint: app/masonry
