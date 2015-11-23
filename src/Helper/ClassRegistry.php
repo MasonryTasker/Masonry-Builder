@@ -35,9 +35,6 @@ class ClassRegistry
     public function addClassNames(array $fullyQualifiedNames = [])
     {
         foreach($fullyQualifiedNames as $fullyQualifiedName) {
-            if(!is_string($fullyQualifiedName)) {
-                throw new \InvalidArgumentException('Class names must be strings');
-            }
             $this->addClassName($fullyQualifiedName);
         }
         return $this;
@@ -46,10 +43,14 @@ class ClassRegistry
     /**
      * Add a class name to the registry
      * @param $fullyQualifiedName
+     * @throws \InvalidArgumentException
      * @return $this
      */
     public function addClassName($fullyQualifiedName)
     {
+        if(!is_string($fullyQualifiedName)) {
+            throw new \InvalidArgumentException('Class names must be strings');
+        }
         $this->classNames[$fullyQualifiedName] = $fullyQualifiedName;
         return $this;
     }
