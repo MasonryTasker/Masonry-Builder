@@ -43,7 +43,6 @@ class Worker extends GenericWorker
         }
 
         $deferred->reject("Could not move '{$description->getFrom()}' to '{$description->getTo()}'");
-        return;
     }
 
     /**

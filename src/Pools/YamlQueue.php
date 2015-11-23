@@ -47,10 +47,10 @@ class YamlQueue extends ArrayQueue
     /**
      * Try to add a task
      * @param $taskName
-     * @param $parameters
+     * @param $taskParameters
      * @return $this
      */
-    protected function addPotentialTask($taskName, $parameters)
+    protected function addPotentialTask($taskName, $taskParameters)
     {
         $className = '';
         try {
@@ -61,8 +61,8 @@ class YamlQueue extends ArrayQueue
         }
 
         if(!class_exists($className)) {
-            if(is_array($parameters)) {
-                foreach($parameters as $name => $parameters) {
+            if(is_array($taskParameters)) {
+                foreach($taskParameters as $name => $parameters) {
                     $this->addPotentialTask($name, $parameters);
                 }
                 return $this;
@@ -71,7 +71,7 @@ class YamlQueue extends ArrayQueue
         }
 
         $descriptionReflection = new \ReflectionClass($className);
-        $description = $descriptionReflection->newInstanceArgs($parameters);
+        $description = $descriptionReflection->newInstanceArgs($taskParameters);
 
         if($description instanceof DescriptionInterface) {
             return $this->addTask(new Task($description));

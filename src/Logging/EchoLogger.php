@@ -11,8 +11,6 @@
 
 namespace Foundry\Masonry\Builder\Logging;
 
-use Psr\Log\LogLevel;
-
 
 /**
  * Class EchoLogger

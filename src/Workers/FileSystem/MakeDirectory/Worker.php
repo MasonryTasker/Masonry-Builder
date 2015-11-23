@@ -48,7 +48,6 @@ class Worker extends GenericWorker
         }
 
         $deferred->reject("Directory '{$description->getName()}' could not be created");
-        return;
     }
 
     /**

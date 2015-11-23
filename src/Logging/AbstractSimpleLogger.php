@@ -56,7 +56,6 @@ abstract class AbstractSimpleLogger extends AbstractLogger
             case LogLevel::INFO:
             case LogLevel::DEBUG:
                 return strtolower($level);
-                break;
             case LogLevel::EMERGENCY:
             case LogLevel::ALERT:
             case LogLevel::CRITICAL:
@@ -64,7 +63,6 @@ abstract class AbstractSimpleLogger extends AbstractLogger
             case LogLevel::WARNING:
             default:
                 return strtoupper($level);
-                break;
         }
     }
 
@@ -73,14 +71,14 @@ abstract class AbstractSimpleLogger extends AbstractLogger
      * @param $level
      * @return string
      */
-    public function decorateLevel($level)
+    protected function decorateLevel($level)
     {
         return str_pad($level, static::MIN_SIZE, ' ') . " :  ";
     }
 
     /**
      * Apply a colour based on the level
-     * This function does not change color by default but should be
+     * This function does not change color by default but should be extended
      * @param $level
      * @param $textToColor
      * @return string
@@ -95,7 +93,7 @@ abstract class AbstractSimpleLogger extends AbstractLogger
      * @param $message
      * @return string
      */
-    public function formatMessage($message)
+    protected function formatMessage($message)
     {
         return $this->decorateMessage($message);
     }
@@ -105,7 +103,7 @@ abstract class AbstractSimpleLogger extends AbstractLogger
      * @param $message
      * @return string
      */
-    public function decorateMessage($message)
+    protected function decorateMessage($message)
     {
         return $message;
     }

@@ -314,10 +314,12 @@ class WorkerTest extends GenericWorkerTestCase
 
         // Tests
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
-        $this->assertTrue(
-            $processDeferred($deferred, $task),
-            $failureMessage
-        );
+
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         $this->assertSame(
             "Composer 'install' ran successfully",
@@ -401,10 +403,12 @@ class WorkerTest extends GenericWorkerTestCase
 
         // Tests
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
-        $this->assertFalse(
-            $processDeferred($deferred, $task),
-            $failureMessage
-        );
+
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         $this->assertSame(
             "",

@@ -49,7 +49,7 @@ class GitTest extends TestCase
         $system = $this->getMock(System::class);
         $system->expects($this->once())
             ->method('exec')
-            ->with('git "clone" "--recursive" "'.$repository.'" "'.$directory.'"')
+            ->with($this->fixShellArgumentQuotes('git "clone" "--recursive" "'.$repository.'" "'.$directory.'"'))
             ->will($this->returnValue(0));
 
         $git = $this->getTestSubject();
@@ -79,22 +79,22 @@ class GitTest extends TestCase
         // Pass
         $system->expects($this->at(0))
             ->method('exec')
-            ->with('git "checkout" "--detach" "-C" "'.$directory.'" "'.$identifier.'"')
+            ->with($this->fixShellArgumentQuotes('git "checkout" "--detach" "-C" "'.$directory.'" "'.$identifier.'"'))
             ->will($this->returnValue(0));
         // Pass
         $system->expects($this->at(1))
             ->method('exec')
-            ->with('git "clone" "--recursive" "'.$repository.'" "'.$directory.'"')
+            ->with($this->fixShellArgumentQuotes('git "clone" "--recursive" "'.$repository.'" "'.$directory.'"'))
             ->will($this->returnValue(0));
         // Pass
         $system->expects($this->at(2))
             ->method('exec')
-            ->with('git "checkout" "--detach" "-C" "'.$directory.'" "'.$identifier.'"')
+            ->with($this->fixShellArgumentQuotes('git "checkout" "--detach" "-C" "'.$directory.'" "'.$identifier.'"'))
             ->will($this->returnValue(0));
         // Fail
         $system->expects($this->at(3))
             ->method('exec')
-            ->with('git "clone" "--recursive" "'.$repository.'" "'.$directory.'"')
+            ->with($this->fixShellArgumentQuotes('git "clone" "--recursive" "'.$repository.'" "'.$directory.'"'))
             ->will($this->returnValue(1));
 
         $git = $this->getTestSubject();

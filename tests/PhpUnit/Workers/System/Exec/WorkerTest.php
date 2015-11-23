@@ -140,7 +140,7 @@ class WorkerTest extends GenericWorkerTestCase
         $git = $this->getMock(System::class);
         $git->expects($this->once())
             ->method('exec')
-            ->with('command "argument"')
+            ->with($this->fixShellArgumentQuotes('command "argument"'))
             ->will($this->returnValue(0)); // exit code
 
         $description = new Description("$command $argument");
@@ -151,11 +151,11 @@ class WorkerTest extends GenericWorkerTestCase
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-        $this->assertTrue(
-            $processDeferred($deferred, $task),
-            $failureMessage
-        );
-
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         // Test messages
         $this->assertSame(
@@ -213,7 +213,7 @@ class WorkerTest extends GenericWorkerTestCase
         $git = $this->getMock(System::class);
         $git->expects($this->once())
             ->method('exec')
-            ->with('command "argument"')
+            ->with($this->fixShellArgumentQuotes('command "argument"'))
             ->will($this->returnValue(1)); // exit code
 
         $description = new Description("$command $argument");
@@ -224,11 +224,11 @@ class WorkerTest extends GenericWorkerTestCase
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
-        $this->assertFalse(
-            $processDeferred($deferred, $task),
-            $failureMessage
-        );
-
+        /** @var \Generator $generator */
+        $generator = $processDeferred($deferred, $task);
+        while($generator->valid()) {
+            $generator->next();
+        }
 
         // Test messages
         $this->assertSame(

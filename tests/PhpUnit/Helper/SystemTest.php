@@ -28,26 +28,40 @@ class SystemTest extends TestCase
      * @throws \Exception
      * @return void
      */
-    public function testCopy()
+    public function testExec()
     {
         $system = new System();
 
         $testMessage = 'Test Message';
-        $output = [];
+        $output = '';
+        $error  = '';
 
         $this->assertSame(
             0,
-            $system->exec("echo $testMessage", $output)
+            $system->exec("echo $testMessage", $output, $error)
         );
 
-        $this->assertCount(
-            1,
-            $output
+        $this->assertEmpty(
+            $error
         );
 
         $this->assertSame(
-            end($output),
-            $testMessage
+            $testMessage,
+            trim($output)
+        );
+
+        $this->assertNotEquals(
+            0,
+            $system->exec("acho $testMessage", $output, $error)
+        );
+
+        $this->assertEmpty(
+            $output
+        );
+
+        $this->assertContains(
+            'acho',
+            $error
         );
     }
 }
