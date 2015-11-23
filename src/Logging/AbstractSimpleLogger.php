@@ -56,7 +56,6 @@ abstract class AbstractSimpleLogger extends AbstractLogger
             case LogLevel::INFO:
             case LogLevel::DEBUG:
                 return strtolower($level);
-                break;
             case LogLevel::EMERGENCY:
             case LogLevel::ALERT:
             case LogLevel::CRITICAL:
@@ -64,7 +63,6 @@ abstract class AbstractSimpleLogger extends AbstractLogger
             case LogLevel::WARNING:
             default:
                 return strtoupper($level);
-                break;
         }
     }
 
