@@ -22,11 +22,6 @@ class ClassRegistry
 
     protected $classNames = [];
 
-    public function __construct(array $fullyQualifiedNames = [])
-    {
-        $this->addClassNames($fullyQualifiedNames);
-    }
-
     /**
      * Add a group of class names to the registry
      * @param array $fullyQualifiedNames
