@@ -48,7 +48,6 @@ class Worker extends GenericWorker
         }
 
         $deferred->resolve("Copied '{$description->getFrom()}' to '{$description->getTo()}'");
-        return;
     }
 
     /**

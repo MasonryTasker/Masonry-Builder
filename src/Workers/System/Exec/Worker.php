@@ -52,7 +52,6 @@ class Worker extends GenericWorker
             // Do nothing
         }
         $deferred->reject("Failed to execute '{$description}'");
-        return;
     }
 
     /**

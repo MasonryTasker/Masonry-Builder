@@ -52,7 +52,6 @@ class Worker extends GenericWorker
         }
 
         $deferred->reject("File or directory '{$description->getName()}' could not be deleted");
-        return;
     }
 
     /**
