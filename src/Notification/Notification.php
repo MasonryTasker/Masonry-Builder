@@ -73,7 +73,7 @@ class Notification implements NotificationInterface
     /**
      * @return string
      */
-    protected function __toString()
+    public function __toString()
     {
         return $this->getMessage();
     }
