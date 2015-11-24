@@ -28,6 +28,11 @@ class Description extends GenericDescription
     protected $command;
 
     /**
+     * @var bool
+     */
+    protected $dev;
+
+    /**
      * @var string[]
      */
     protected $acceptableCommands = [
@@ -40,16 +45,18 @@ class Description extends GenericDescription
     ];
 
     /**
-     * @param string $command The command to run composer with
+     * @param string $command  The command to run composer with
      * @param string $location The location of composer.json
+     * @param bool   $dev      Install dev dependencies
      */
-    public function __construct($command, $location)
+    public function __construct($command, $location, $dev = false)
     {
         $this->location = preg_replace('/(\\\\|\\/)?composer\.json$/', '', $location);
         if (!in_array($command, $this->acceptableCommands)) {
             throw new \InvalidArgumentException('$command must be one of: '.implode(', ', $this->acceptableCommands));
         }
         $this->command = $command;
+        $this->dev = $dev;
     }
 
     /**
@@ -67,4 +74,13 @@ class Description extends GenericDescription
     {
         return $this->location;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isDev()
+    {
+        return $this->dev;
+    }
+
 }
