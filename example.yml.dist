@@ -14,5 +14,5 @@
 
 - Phar:
     fileName: /tmp/masonry-builder.phar
-    directory: .
+    directory: /tmp/Masonry-Builder
     entryPoint: app/masonry
