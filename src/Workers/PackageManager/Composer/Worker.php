@@ -52,8 +52,9 @@ class Worker extends GenericWorker
             }
             $input = new ArrayInput(
                 [
-                'command' => $description->getCommand(),
-                '-d' => $description->getLocation(),
+                    'command' => $description->getCommand(),
+                    '-d' => $description->getLocation(),
+                    '--no-dev' => !$description->isDev(),
                 ]
             );
 
