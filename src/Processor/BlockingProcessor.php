@@ -12,6 +12,8 @@
 namespace Foundry\Masonry\Builder\Processor;
 
 use Foundry\Masonry\Builder\Coroutine\Factory;
+use Foundry\Masonry\Builder\Notification\Notification;
+use Foundry\Masonry\Builder\Notification\NotificationInterface;
 use Foundry\Masonry\Interfaces\Pool\StatusInterface;
 use Foundry\Masonry\Interfaces\PoolInterface;
 
@@ -44,6 +46,9 @@ class BlockingProcessor extends AbstractProcessor
                 })
                 // On failure
                 ->otherwise(function ($result) use (&$success) {
+                    if(!$result instanceof NotificationInterface) {
+                        $result = new Notification($result, 0); // Failures should always show
+                    }
                     $this->getLogger()->error($result);
                     $success = false;
                 })
