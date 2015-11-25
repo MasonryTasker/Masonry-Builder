@@ -42,7 +42,14 @@ class SymfonyOutputLogger extends AbstractSimpleLogger
         if(!$message instanceof NotificationInterface) {
             $message = new Notification($message);
         }
-        if($this->output->getVerbosity() > $message->getPriority()) {
+        if($this->output->getVerbosity() >= $message->getPriority()) {
+            // Switch off Quiet if it's on
+            if($this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET) {
+                $this->output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
+                $this->output->writeln($this->formatLog($level, $message));
+                $this->output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+                return;
+            }
             $this->output->writeln($this->formatLog($level, $message));
         }
     }
