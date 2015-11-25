@@ -14,6 +14,7 @@
 namespace Foundry\Masonry\Builder\Workers\FileSystem\Move;
 
 use Foundry\Masonry\Builder\Helper\FileSystemTrait;
+use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -35,7 +36,12 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Moving '{$description->getFrom()}' to '{$description->getTo()}'");
+        $deferred->notify(
+            new Notification(
+                "Moving '{$description->getFrom()}' to '{$description->getTo()}'",
+                Notification::PRIORITY_NORMAL
+            )
+        );
 
         if ($this->getFileSystem()->move($description->getFrom(), $description->getTo())) {
             $deferred->resolve("Moved '{$description->getFrom()}' to '{$description->getTo()}'");

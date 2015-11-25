@@ -11,6 +11,8 @@
 
 namespace Foundry\Masonry\Builder\Logging;
 
+use Foundry\Masonry\Builder\Notification\Notification;
+use Foundry\Masonry\Builder\Notification\NotificationInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -37,7 +39,19 @@ class SymfonyOutputLogger extends AbstractSimpleLogger
      */
     public function log($level, $message, array $context = array())
     {
-        $this->output->writeln($this->formatLog($level, $message));
+        if(!$message instanceof NotificationInterface) {
+            $message = new Notification($message);
+        }
+        if($this->output->getVerbosity() >= $message->getPriority()) {
+            // Switch off Quiet if it's on
+            if($this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET) {
+                $this->output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
+                $this->output->writeln($this->formatLog($level, $message));
+                $this->output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+                return;
+            }
+            $this->output->writeln($this->formatLog($level, $message));
+        }
     }
 
     /**

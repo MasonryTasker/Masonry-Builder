@@ -12,6 +12,7 @@
 namespace Foundry\Masonry\Builder\Workers\System\Exec;
 
 use Foundry\Masonry\Builder\Helper\SystemTrait;
+use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -41,7 +42,12 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Executing '{$description}'");
+        $deferred->notify(
+            new Notification(
+                "Executing '{$description}'",
+                Notification::PRIORITY_NORMAL
+            )
+        );
 
         try {
             if (0 === $this->getSystem()->exec($description->getCommandString())) {

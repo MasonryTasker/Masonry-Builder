@@ -14,6 +14,7 @@
 namespace Foundry\Masonry\Builder\Workers\PackageManager\Composer;
 
 use Foundry\Masonry\Builder\Helper\EnvironmentTrait;
+use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -44,7 +45,12 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Preparing to run composer '{$description->getCommand()}'");
+        $deferred->notify(
+            new Notification(
+                "Preparing to run composer '{$description->getCommand()}'",
+                Notification::PRIORITY_NORMAL
+            )
+        );
 
         try {
             if (!$this->getEnvironment()->get('COMPOSER_HOME')) {
