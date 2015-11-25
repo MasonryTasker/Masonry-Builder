@@ -42,18 +42,24 @@ class BlockingProcessor extends AbstractProcessor
             $this->getMediator()->process($pool->getTask())
                 // On success
                 ->then(function ($result) use (&$taskComplete) {
+                    if(!$result instanceof NotificationInterface) {
+                        $result = new Notification($result, Notification::PRIORITY_NORMAL); // Success normally shown
+                    }
                     $this->getLogger()->info($result);
                 })
                 // On failure
                 ->otherwise(function ($result) use (&$success) {
                     if(!$result instanceof NotificationInterface) {
-                        $result = new Notification($result, 0); // Failures should always show
+                        $result = new Notification($result, Notification::PRIORITY_HIGH); // Failures should always show
                     }
                     $this->getLogger()->error($result);
                     $success = false;
                 })
                 // When something happens
                 ->progress(function ($result) {
+                    if(!$result instanceof NotificationInterface) {
+                        $result = new Notification($result, Notification::PRIORITY_INFO); // Only info level
+                    }
                     $this->getLogger()->notice($result);
                 })
                 // When complete, regardless of success of failure
