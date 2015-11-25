@@ -14,6 +14,7 @@
 namespace Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory;
 
 use Foundry\Masonry\Builder\Helper\FileSystemTrait;
+use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -36,7 +37,12 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Creating directory '{$description->getName()}'");
+        $deferred->notify(
+            new Notification(
+                "Creating directory '{$description->getName()}'",
+                Notification::PRIORITY_NORMAL
+            )
+        );
 
         if($this->getFileSystem()->isDirectory($description->getName())) {
             $deferred->resolve("Directory '{$description->getName()}' already exists");

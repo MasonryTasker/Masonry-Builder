@@ -13,6 +13,7 @@
 
 namespace Foundry\Masonry\Builder\Workers\Php\Phar;
 
+use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -32,7 +33,12 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Preparing to create phar archive '{$description->getFileName()}'");
+        $deferred->notify(
+            new Notification(
+                "Preparing to create phar archive '{$description->getFileName()}'",
+                Notification::PRIORITY_NORMAL
+            )
+        );
 
         try {
             $phar = new \Phar($description->getFileName());
