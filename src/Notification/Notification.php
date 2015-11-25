@@ -20,6 +20,11 @@ namespace Foundry\Masonry\Builder\Notification;
 class Notification implements NotificationInterface
 {
 
+    const PRIORITY_HIGH    = 0;
+    const PRIORITY_NORMAL  = 1;
+    const PRIORITY_INFO    = 3;
+    const PRIORITY_DEBUG   = 4;
+
     /**
      * The notification message
      * @var int
