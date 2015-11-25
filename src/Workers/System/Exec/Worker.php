@@ -11,6 +11,7 @@
 
 namespace Foundry\Masonry\Builder\Workers\System\Exec;
 
+use Foundry\Masonry\Builder\Helper\System\Exec;
 use Foundry\Masonry\Builder\Helper\SystemTrait;
 use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
@@ -50,7 +51,15 @@ class Worker extends GenericWorker
         );
 
         try {
-            if (0 === $this->getSystem()->exec($description->getCommandString())) {
+            $processes = Exec::exec($description->getCommandString());
+            $exitCode = $processes->getExitCode();
+
+            // Yield until the process is complete
+            while(is_null($exitCode)) {
+                yield;
+                $exitCode = $processes->getExitCode();
+            }
+            if (0 === $exitCode) {
                 $deferred->resolve("Executed '{$description}'");
                 return;
             }
