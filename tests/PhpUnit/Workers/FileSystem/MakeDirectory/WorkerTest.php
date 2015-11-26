@@ -107,6 +107,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -165,17 +166,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Created directory '{$testDir}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Creating directory '{$testDir}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -184,6 +185,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredExists()
@@ -237,17 +239,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Directory '{$testDir}' already exists",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Creating directory '{$testDir}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -256,6 +258,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -314,17 +317,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Directory '{$testDir}' could not be created",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Creating directory '{$testDir}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

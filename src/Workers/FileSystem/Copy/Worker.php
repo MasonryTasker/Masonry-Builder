@@ -14,6 +14,7 @@
 namespace Foundry\Masonry\Builder\Workers\FileSystem\Copy;
 
 use Foundry\Masonry\Builder\Helper\FileSystemTrait;
+use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
 use Foundry\Masonry\Interfaces\TaskInterface;
 use React\Promise\Deferred;
@@ -36,7 +37,12 @@ class Worker extends GenericWorker
         /** @var Description $description */
         $description = $task->getDescription();
 
-        $deferred->notify("Copying '{$description->getFrom()}' to '{$description->getTo()}'");
+        $deferred->notify(
+            new Notification(
+                "Copying '{$description->getFrom()}' to '{$description->getTo()}'",
+                Notification::PRIORITY_NORMAL
+            )
+        );
 
         try {
             if (!$this->getFileSystem()->copy($description->getFrom(), $description->getTo())) {

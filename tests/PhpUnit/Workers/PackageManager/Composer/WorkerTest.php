@@ -261,6 +261,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
      * @uses Foundry\Masonry\Builder\Helper\Environment
      * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -323,17 +324,17 @@ class WorkerTest extends GenericWorkerTestCase
 
         $this->assertSame(
             "Composer 'install' ran successfully",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Preparing to run composer 'install'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -347,6 +348,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
      * @uses Foundry\Masonry\Builder\Helper\Environment
      * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -412,17 +414,17 @@ class WorkerTest extends GenericWorkerTestCase
 
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Composer 'install' failed",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Preparing to run composer 'install'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

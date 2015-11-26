@@ -106,6 +106,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -161,17 +162,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Copied '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Copying '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -180,6 +181,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -238,17 +240,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not copy '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Copying '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -257,6 +259,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Copy\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredPartialSuccess()
@@ -312,17 +315,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Copied '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Directory permissions were not applied correctly",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

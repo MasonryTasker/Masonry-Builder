@@ -11,6 +11,8 @@
 
 namespace Foundry\Masonry\Builder\Helper;
 
+use Foundry\Masonry\Builder\Helper\System\ExecProcess;
+
 /**
  * Class System
  * System level actions
@@ -30,37 +32,48 @@ class System
      * @throws \RuntimeException
      * @return int The exit code
      */
-        public function exec($command, &$stdOutput = '', &$stdError = '')
-        {
-            $process = proc_open(
-                $command,
-                [
-                    0 => ['pipe', 'r'],
-                    1 => ['pipe', 'w'],
-                    2 => ['pipe', 'w'],
-                ],
-                $pipes
-            );
+    public function exec($command, &$stdOutput = '', &$stdError = '')
+    {
+        $process = proc_open(
+            $command,
+            [
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w'],
+            ],
+            $pipes
+        );
 
-            if (!is_resource($process)) {
-                throw new \RuntimeException('Could not create a valid process');
-            }
-
-            // This will prevent to program from continuing until the processes is complete
-            $status = proc_get_status($process);
-            while($status['running']) {
-                $status = proc_get_status($process);
-            }
-
-            $stdOutput = stream_get_contents($pipes[1]);
-            $stdError  = stream_get_contents($pipes[2]);
-
-            foreach($pipes as $pipe) {
-                fclose($pipe);
-            }
-
-            proc_close($process);
-
-            return $status['exitcode'];
+        if (!is_resource($process)) {
+            throw new \RuntimeException('Could not create a valid process');
         }
+
+        // This will prevent to program from continuing until the processes is complete
+        $status = proc_get_status($process);
+        while($status['running']) {
+            $status = proc_get_status($process);
+        }
+
+        $stdOutput = stream_get_contents($pipes[1]);
+        $stdError  = stream_get_contents($pipes[2]);
+
+        foreach($pipes as $pipe) {
+            fclose($pipe);
+        }
+
+        proc_close($process);
+
+        return $status['exitcode'];
+    }
+
+    /**
+     * Starts a process that runs in the background.
+     * Returns an object that can be used to check on the status of that process, as well as get it's output
+     * @param $command
+     * @return ExecProcess
+     */
+    public function execAsynchronous($command)
+    {
+        return ExecProcess::exec($command);
+    }
 }

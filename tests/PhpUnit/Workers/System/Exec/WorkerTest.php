@@ -12,6 +12,7 @@
 namespace Foundry\Masonry\Builder\Tests\PhpUnit\Workers\System\Exec;
 
 use Foundry\Masonry\Builder\Helper\System;
+use Foundry\Masonry\Builder\Helper\System\ExecProcess;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Helper\SystemTestTrait;
 use Foundry\Masonry\Builder\Tests\PhpUnit\Workers\GenericWorkerTestCase;
 use Foundry\Masonry\Builder\Workers\System\Exec\Description;
@@ -106,6 +107,8 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\System\Exec\Description
      * @uses Foundry\Masonry\Builder\Helper\SystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
+     * @uses Foundry\Masonry\Builder\Workers\System\Exec\Worker::debugNotifyProcess
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -136,18 +139,37 @@ class WorkerTest extends GenericWorkerTestCase
         $command = 'command';
         $argument = 'argument';
 
-        /** @var System|\PHPUnit_Framework_MockObject_MockObject $git */
-        $git = $this->getMock(System::class);
-        $git->expects($this->once())
-            ->method('exec')
+        /** @var ExecProcess|\PHPUnit_Framework_MockObject_MockObject $process */
+        $process = $this
+            ->getMockBuilder(ExecProcess::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $process
+            ->expects($this->once())
+            ->method('getOutputArray')
+            ->will($this->returnValue([]));
+        $process
+            ->expects($this->once())
+            ->method('getErrorArray')
+            ->will($this->returnValue([]));
+        $process
+            ->expects($this->once())
+            ->method('getExitCode')
+            ->will($this->returnValue(0));
+
+        /** @var System|\PHPUnit_Framework_MockObject_MockObject $system */
+        $system = $this->getMock(System::class);
+        $system
+            ->expects($this->once())
+            ->method('execAsynchronous')
             ->with($this->fixShellArgumentQuotes('command "argument"'))
-            ->will($this->returnValue(0)); // exit code
+            ->will($this->returnValue($process)); // exit code
 
         $description = new Description("$command $argument");
 
         $task = new Task($description);
         $worker = $this->getTestSubject();
-        $worker->setSystem($git);
+        $worker->setSystem($system);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
@@ -160,17 +182,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Executed '{$description}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Executing '{$description}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -179,6 +201,8 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\System\Exec\Description
      * @uses Foundry\Masonry\Builder\Helper\SystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
+     * @uses Foundry\Masonry\Builder\Workers\System\Exec\Worker::debugNotifyProcess
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -209,18 +233,37 @@ class WorkerTest extends GenericWorkerTestCase
         $command = 'command';
         $argument = 'argument';
 
-        /** @var System|\PHPUnit_Framework_MockObject_MockObject $git */
-        $git = $this->getMock(System::class);
-        $git->expects($this->once())
-            ->method('exec')
+        /** @var ExecProcess|\PHPUnit_Framework_MockObject_MockObject $process */
+        $process = $this
+            ->getMockBuilder(ExecProcess::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $process
+            ->expects($this->once())
+            ->method('getOutputArray')
+            ->will($this->returnValue([]));
+        $process
+            ->expects($this->once())
+            ->method('getErrorArray')
+            ->will($this->returnValue([]));
+        $process
+            ->expects($this->once())
+            ->method('getExitCode')
+            ->will($this->returnValue(1));
+
+        /** @var System|\PHPUnit_Framework_MockObject_MockObject $system */
+        $system = $this->getMock(System::class);
+        $system
+            ->expects($this->once())
+            ->method('execAsynchronous')
             ->with($this->fixShellArgumentQuotes('command "argument"'))
-            ->will($this->returnValue(1)); // exit code
+            ->will($this->returnValue($process)); // exit code
 
         $description = new Description("$command $argument");
 
         $task = new Task($description);
         $worker = $this->getTestSubject();
-        $worker->setSystem($git);
+        $worker->setSystem($system);
 
         $processDeferred = $this->getObjectMethod($worker, 'processDeferred');
 
@@ -233,17 +276,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Failed to execute '{$description}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Executing '{$description}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }
