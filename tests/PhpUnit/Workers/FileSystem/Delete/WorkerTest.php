@@ -106,6 +106,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -188,6 +189,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -265,6 +267,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\Delete\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSkip()

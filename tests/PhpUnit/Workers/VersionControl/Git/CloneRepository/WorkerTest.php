@@ -106,6 +106,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
      * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -179,6 +180,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
      * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -252,6 +254,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
      * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailureException()

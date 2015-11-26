@@ -261,6 +261,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
      * @uses Foundry\Masonry\Builder\Helper\Environment
      * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -347,6 +348,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @uses Foundry\Masonry\Builder\Workers\PackageManager\Composer\Description
      * @uses Foundry\Masonry\Builder\Helper\Environment
      * @uses Foundry\Masonry\Builder\Helper\EnvironmentTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()

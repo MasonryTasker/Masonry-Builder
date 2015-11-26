@@ -107,6 +107,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -184,6 +185,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredExists()
@@ -256,6 +258,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\FileSystem\MakeDirectory\Description
      * @uses Foundry\Masonry\Builder\Helper\FileSystemTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
