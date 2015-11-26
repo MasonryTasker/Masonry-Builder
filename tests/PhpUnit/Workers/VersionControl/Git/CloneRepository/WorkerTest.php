@@ -106,6 +106,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
      * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredSuccess()
@@ -160,17 +161,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Cloned '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Cloning '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -179,6 +180,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
      * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailure()
@@ -233,17 +235,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not clone '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Cloning '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -252,6 +254,7 @@ class WorkerTest extends GenericWorkerTestCase
      * @covers ::processDeferred
      * @uses Foundry\Masonry\Builder\Workers\VersionControl\Git\CloneRepository\Description
      * @uses Foundry\Masonry\Builder\Helper\VersionControl\GitTrait
+     * @uses Foundry\Masonry\Builder\Notification\Notification
      * @return void
      */
     public function testProcessDeferredFailureException()
@@ -306,17 +309,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not clone '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Cloning '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }
