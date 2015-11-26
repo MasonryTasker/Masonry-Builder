@@ -72,6 +72,10 @@ class ExecProcess
             throw new \RuntimeException('Could not create a valid process');
         }
 
+        foreach($exec->pipes as $pipe) {
+            stream_set_blocking($pipe, 0);
+        }
+
         return $exec;
     }
 
