@@ -52,17 +52,15 @@ class Worker extends GenericWorker
 
         try {
             $process = ExecProcess::exec($description->getCommandString());
-            $exitCode = $process->getExitCode();
 
             // Yield until the process is complete
-            while(is_null($exitCode)) {
+            while(is_null($exitCode = $process->getExitCode())) {
                 $this->debugNotifyProcess($deferred, $process);
                 yield;
-                $exitCode = $process->getExitCode();
             }
 
             // Check outputs one last time
-//            $this->debugNotifyProcess($deferred, $process);
+            $this->debugNotifyProcess($deferred, $process);
 
             if (0 === $exitCode) {
                 $deferred->resolve("Executed '{$description}'");
