@@ -11,7 +11,7 @@
 
 namespace Foundry\Masonry\Builder\Workers\System\Exec;
 
-use Foundry\Masonry\Builder\Helper\System\Exec;
+use Foundry\Masonry\Builder\Helper\System\ExecProcess;
 use Foundry\Masonry\Builder\Helper\SystemTrait;
 use Foundry\Masonry\Builder\Notification\Notification;
 use Foundry\Masonry\Builder\Workers\GenericWorker;
@@ -51,14 +51,19 @@ class Worker extends GenericWorker
         );
 
         try {
-            $processes = Exec::exec($description->getCommandString());
-            $exitCode = $processes->getExitCode();
+            $process = ExecProcess::exec($description->getCommandString());
+            $exitCode = $process->getExitCode();
 
             // Yield until the process is complete
             while(is_null($exitCode)) {
+                $this->debugNotifyProcess($deferred, $process);
                 yield;
-                $exitCode = $processes->getExitCode();
+                $exitCode = $process->getExitCode();
             }
+
+            // Check outputs one last time
+//            $this->debugNotifyProcess($deferred, $process);
+
             if (0 === $exitCode) {
                 $deferred->resolve("Executed '{$description}'");
                 return;
@@ -67,6 +72,23 @@ class Worker extends GenericWorker
             // Do nothing
         }
         $deferred->reject("Failed to execute '{$description}'");
+    }
+
+    /**
+     * Create debug notifications for all output
+     * @param Deferred $deferred
+     * @param ExecProcess $process
+     * @return $this
+     */
+    protected function debugNotifyProcess(Deferred $deferred, ExecProcess $process)
+    {
+        foreach($process->getOutputArray() as $output) {
+            $deferred->notify(new Notification($output, Notification::PRIORITY_DEBUG));
+        }
+        foreach($process->getErrorArray() as $error) {
+            $deferred->notify(new Notification($error, Notification::PRIORITY_DEBUG));
+        }
+        return $this;
     }
 
     /**
