@@ -17,7 +17,7 @@ namespace Foundry\Masonry\Builder\Helper\System;
  * @package Masonry-Builder
  * @see       https://github.com/TheFoundryVisionmongers/Masonry-Builder
  */
-class Exec
+class ExecProcess
 {
 
     const STREAM_INPUT  = 0;
@@ -87,6 +87,46 @@ class Exec
             $this->exitCode = $status['exitcode'];
         }
         return $this->exitCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutput()
+    {
+        return stream_get_contents($this->pipes[static::STREAM_OUTPUT]);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOutputArray()
+    {
+        $output = trim($this->getOutput());
+        if(!$output) {
+            return [];
+        }
+        return preg_split ('/$\R?^/m', $output);
+    }
+
+    /**
+     * @return string
+     */
+    public function getError()
+    {
+        return stream_get_contents($this->pipes[static::STREAM_ERROR]);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getErrorArray()
+    {
+        $error = trim($this->getError());
+        if(!$error) {
+            return [];
+        }
+        return preg_split ('/$\R?^/m', $error);
     }
 
     /**
