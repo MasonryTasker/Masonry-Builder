@@ -51,7 +51,7 @@ class Worker extends GenericWorker
         );
 
         try {
-            $process = ExecProcess::exec($description->getCommandString());
+            $process = $this->getSystem()->execAsynchronous($description->getCommandString());
 
             // Yield until the process is complete
             while(is_null($exitCode = $process->getExitCode())) {
