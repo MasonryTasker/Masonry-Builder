@@ -11,6 +11,8 @@
 
 namespace Foundry\Masonry\Builder\Helper;
 
+use Foundry\Masonry\Builder\Helper\System\ExecProcess;
+
 /**
  * Class System
  * System level actions
@@ -64,4 +66,14 @@ class System
         return $status['exitcode'];
     }
 
+    /**
+     * Starts a process that runs in the background.
+     * Returns an object that can be used to check on the status of that process, as well as get it's output
+     * @param $command
+     * @return ExecProcess
+     */
+    public function execAsynchronous($command)
+    {
+        return ExecProcess::exec($command);
+    }
 }
