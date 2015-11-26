@@ -169,17 +169,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Deleted file or directory '{$testFile}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Deleting file or directory '{$testFile}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -246,17 +246,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "File or directory '{$testFile}' could not be deleted",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Deleting file or directory '{$testFile}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -323,17 +323,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "File or directory '{$testFile}' does not exist",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Deleting file or directory '{$testFile}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

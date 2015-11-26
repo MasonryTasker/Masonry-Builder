@@ -160,17 +160,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Executed '{$description}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Executing '{$description}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -233,17 +233,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Failed to execute '{$description}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Executing '{$description}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

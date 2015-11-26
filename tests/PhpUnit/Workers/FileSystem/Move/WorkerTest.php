@@ -161,17 +161,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Moved '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Moving '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -235,17 +235,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not move '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Moving '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

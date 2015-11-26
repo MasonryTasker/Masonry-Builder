@@ -161,17 +161,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Copied '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Copying '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -238,17 +238,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not copy '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Copying '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -312,17 +312,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Copied '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Directory permissions were not applied correctly",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }

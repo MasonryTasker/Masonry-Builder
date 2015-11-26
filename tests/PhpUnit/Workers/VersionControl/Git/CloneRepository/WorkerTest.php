@@ -160,17 +160,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "Cloned '{$testFrom}' to '{$testTo}'",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Cloning '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -233,17 +233,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not clone '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Cloning '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 
@@ -306,17 +306,17 @@ class WorkerTest extends GenericWorkerTestCase
         // Test messages
         $this->assertSame(
             "",
-            $successMessage
+            (string)$successMessage
         );
 
         $this->assertSame(
             "Could not clone '{$testFrom}' to '{$testTo}'",
-            $failureMessage
+            (string)$failureMessage
         );
 
         $this->assertSame(
             "Cloning '{$testFrom}' to '{$testTo}'",
-            $notifyMessage
+            (string)$notifyMessage
         );
     }
 }
